@@ -318,12 +318,14 @@ $\rightarrow$ étudier la distribution des valeurs (e.g. cas bimodal) et opérer
 
 
 ### Moyenne geométrique:
+<br>
 
 $\displaystyle \bar{x} = \sqrt[n]{\prod _{i=0}^{n} x_i}$  
 
 Moins sensible à la présence de valeurs extrèmes
 
 ### Moyenne quadratique (RMS) 
+<br>
 
 $\displaystyle \bar{x} = \sqrt{\frac{1}{n}\prod _{i=0}^{n} x_i}$
 
@@ -423,7 +425,7 @@ plot1
 ## Distribution unimodale symétrique 
 
 ```{r gaussienne2, cache=TRUE, fig.width=8, fig.height=3.5}
-xx <- data.frame(value=rnorm(2600,mean = 5, sd = 1))
+xx <- data.frame(value=rnorm(2900,mean = 5, sd = 1))
 plot1 <- ggplot(xx)+
         geom_line(aes(x = value),stat = "density", color="#44DD99", lwd= 1.3)+
         geom_vline(xintercept = mean(xx$value), color="red")+
@@ -435,6 +437,72 @@ plot1
 
 
 # Statistiques descriptives univariées : la dispersion
+
+## La dispersion statistique 
+
+Tendance des valeurs d'une variable à se disperser autour des valeurs des tendances centrales.
+
+Exemple :  deux variables X et Y, $\sim\mathscr{N}(0,1)$
+
+```{r gaussienne2D, cache=TRUE}
+mydataset <- data.frame(X=rnorm(900), Y=rnorm(900))
+plot1 <- ggplot(mydataset)+
+        geom_point(aes(x = X, y=Y), fill="#44DD99", color="#666666", shape=21)+
+        coord_equal()+theme_light()
+plot1
+```
+
+
+## Variance et Écart-type
+
+La **variance** est la somme des écarts carrés à la moyenne
+
+$\displaystyle var_X= \frac{1}{n}\sum_{i=1}^{n}(x_i -\bar{x})^2$
+
+Avec :
+  
+  * $X$ une variable
+  * $x_i$ les valeurs de la variables
+  * $\bar{x}$ la moyenne de $X$ 
+  * $n$ l'effectif
+
+$\sigma_X = \sqrt{var_X}$  : l'**écart type** est la racine carrée de la variance
+
+## Variance et Écart-type
+
+Variance et écart-type rendent compte de la **dispersion** de la variable autour de sa moyenne.
+
+Ils sont **sensibles** aux valeurs extrèmes et toujours **positifs**.
+
+Si $var_X = 0$ ou $\sigma_X = 0$ , alors $X$ est **constante**.
+
+Un écart-type faible indique que les valeurs sont réparties de façon **homogène** autour de la moyenne.
+
+## Mise en garde {.flexbox .vcenter}
+
+<span style="color:red; font-size:1.5em;">&#9888;</span><span style="font-size:1.3em;">Variance et écart type n'ont d'intérêt que pour qualifier des distributions **unimodales**, et (à peu près) **symétriques**</span> <span style="color:red;font-size:1.5em;">&#9888;</span>
+
+(i.e. proche de la Gaussienne)
+
+
+## Lorsque $X \sim \mathscr{N}(\mu,\sigma) $
+
+```{r stddev1, cache=TRUE}
+X <- data.frame(value=rnorm(1900))
+plot1 <- ggplot(X)+
+        geom_line(aes(x = value),stat="density", color="#44DD99", lwd=1.2)+
+        geom_vline(xintercept = c(-sd(X$value), sd(X$value)), color="red")+
+        geom_vline(xintercept = c(-2*sd(X$value), 2*sd(X$value)), color="blue")+
+        annotate("text", x=c(3.5,3.5), y=c(0.2,0.15), colour=c("red","blue"),label=c("  68,27 % ","95,45 % "))+
+        theme_light()
+plot1
+```
+
+
+## Quantiles
+
+
+# Statistiques descriptives univariées : la forme
 
 ## Construction de la distribution théorique.
 
