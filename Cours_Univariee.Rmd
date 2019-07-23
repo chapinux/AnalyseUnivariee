@@ -103,6 +103,15 @@ plot1
 ```
 
 
+## Histogramme d'une distribution assymetrique à longue traîne.
+
+```{r fat_tail1, cache=TRUE, fig.width=8, fig.height=3.5}
+xx <- data.frame(value=rlnorm(2600,sdlog = 0.5))
+plot1 <- ggplot(xx)+
+        geom_histogram(aes(x = value),bins = 50, color="#aaaaaa", fill="#44DD99" )+
+        theme_light()
+plot1
+```
 
 
 ## Les pièges de la statistique {.flexbox .vcenter}
@@ -218,8 +227,185 @@ $\rightarrow$ notion de **modalités**
 
 ### variables qualitatives **nominales**
 
+Les modalités ne sont **pas ordonnées** explicitement 
+
+e.g. situation matrimoniale $\in$ {marié·e, célibataire, veuf·ve}
+
+### variables qualitatives **ordinales**
+
+Les modalités sont **ordonnées** selon un ordre **total** et non-ambigu. 
+
+e.g. Echelle de Likert (5 ou 7 valeurs, dont une neutre)
+
+satisfaction $\in$ {Très satisfait, Satisfait, Ni satisfait ni insatisfait, Peu satisfait, Pas du tout satisfait}
 
 
+## l'Échelle d’Analyse
+
+
+Spécificité de la statistique spatiale : à quelle échelle observe-t'on une donnée ?
+
+«Problème insoluble» : le MAUP (Modifiable Areal Unit Problem)
+
+###  Unités spatiales agrégées 
+
+agrégation d’unités spatiales : comtés, départements, régions, pays
+
+e.g. Comprendre comment  le taux de chômage d’un pays est distribué entre les régions pour guider les politiques économiques
+
+### Groupe d’unités spatiales: 
+
+identification des unités spatiales ayant des caractéristiques semblables
+
+e.g. IRIS
+
+
+
+## Echelle d’analyse individuelle Vs Echelle d’analyse agrégée 
+
+
+  Inférer à partir de l’analyse de données agrégées des caractéristiques individuelles **Désagrégation** ou  **Ventilation** 
+
+
+Inférer des caractéristiques concernant les unités agrégées d’après les caractéristiques individuelles: **Agrégation** 
+
+
+<span style="color:red">&#9888;</span>pas toujours possible et pas immédiat !<span style="color:red">&#9888;</span>
+
+## le MAUP (Modifibale Aereal Unit Problème)
+
+Problème d'agrégation spatiale : les résultas d'une analyse statistique spatiale dépendent du choix d'agragation 
+
+biais «sytématique et insoluble» 
+
+TODO trouver un exemple carto genre vote 
+
+# Statistiques descriptives univariées : la tendance
+
+## Moyenne
+
+### Moyenne
+
+$\displaystyle \bar{x} = \frac{1}{n}\sum_{i=0}^{n} x_i$
+
+
+### Moyenne pondérée
+
+Lors que les valeurs n'ont pas le même poids (e.g. poids = effectif de la valeur)
+
+$\displaystyle \bar{x} = \frac{1}{\sum_{i=0}^n pi}\sum_{i=0}^{n} p_i x_i$
+
+
+## Avantages et inconvénients de la moyenne
+
+### Avantage
+  Chaque valeur compte
+
+### Inconvénients 
+
+* sensibilité aux valeurs extrèmes 
+* pas de signification sur les valeurs discrètes (e.g. 2.5 enfants par femme)
+
+
+$\rightarrow$ exclure les outliers<br>
+$\rightarrow$ utiliser un autre estimateur<br>
+$\rightarrow$ étudier la distribution des valeurs (e.g. cas bimodal) et opérer une classification
+
+
+
+
+## Autres Moyennes
+
+
+### Moyenne geométrique:
+
+$\displaystyle \bar{x} = \sqrt[n]{\prod _{i=0}^{n} x_i}$  
+
+Moins sensible à la présence de valeurs extrèmes
+
+### Moyenne quadratique (RMS) 
+
+$\displaystyle \bar{x} = \sqrt{\frac{1}{n}\prod _{i=0}^{n} x_i}$
+
+
+## Moyennes glissantes
+
+Moyenne calculée sur une fenètre de $n$ valeurs consécutives.
+
+e.g. on reçoit une mesure chaque seconde, très bruitée, et on désire afficher 10 minutes de signal lissé dans le temps
+
+ $\rightarrow$ on calcule pour chaque point du signal, la moyenne sur 10 valeurs consécutives (5 en avant , 5 en arrière)
+
+
+## le Mode {.flexbox .vcenter}
+
+**Mode** :  valeur la plus fréquente (effectif max.) de la série de valeurs que prend une variable.
+<br>
+<br>
+<span style="color:red">&#9888;</span> si variable quantitative continue<span style="color:red">&#9888;</span>
+
+$\rightarrow$ nécessite une classification préalable
+
+Dans ce cas le mode est la moyenne des valeurs min et max des bornes de la classe de plus grand effectif.
+
+## Avantages et inconvénients du mode
+
+### Avantages 
+Peu sensible aux valeurs extrêmes (moins sensible que la moyenne)
+Signification concrète : la situation la plus fréquente
+
+### Inconvénients 
+Ne dépends pas de toutes les observations : la modification d'une seule valeur n’entraine pas une modification du mode
+
+## la Médiane 
+
+**Médiane** : valeur qui partage une série de valeurs en deux sous-ensembles d’égal effectif
+
+Comme en géométrie, la médiane est la valeur de la variable qui est la plus proche de toutes les autres.
+
+### Etapes de calcul 
+Ordonner les valeurs selon un ordre croissant
+
+Calculer le rang $i=\frac{n+1}{2}$$
+
+si $n$ impair, la valeur médiane existe dans la série statistique
+
+si $n$ pair, la valeur médiane est entre deux valeurs et est égale à la moyenne de ces deux valeurs
+
+
+## Avantages et inconvénients de la médiane 
+
+### Avantages 
+Plus pertinente que la moyenne
+
+Peu sensible aux valeurs extrêmes 
+
+A une signification concrète : qui divise en deux la distribution : un individu sur deux a une valeur inférieure ou supérieure à celle-ci
+
+### Inconvénient 
+Ne dépend pas de toutes les observations : la modification d'une seule valeur n’entraine pas une modification de la médiane 
+
+
+## Quelle mesure choisir ?
+
+Tout dépend de la distribution ! 
+
+$\rightarrow$ **Toujours** afficher l'histogramme ou la distribution de densité
+<br><br>
+
+Le **mode** est privilégié pour les valeurs **nominales** et si on désire considérer «le cas le plus fréquent»
+
+Distributions de variables continues sans longues traines ? <br>
+$\rightarrow$ moyenne et médiane
+
+Plusieurs modes dans la distribution ?<br>
+$\rightarrow$ classification puis mediane / moyenne par classe
+
+
+
+
+
+# Statistiques descriptives univariées : la dispersion
 
 ## Construction de la distribution théorique.
 
