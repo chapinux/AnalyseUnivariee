@@ -1,0 +1,248 @@
+---
+title: "Analyse Univariée (avec R)"
+author: "PC - M2 IGAST"
+date: "2019-2020"
+output: ioslides_presentation
+css : style.css
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.width =6,fig.align="center", fig.height = 3)
+library(knitr)
+library(xtable)
+library(ggplot2)
+library(dplyr)
+```
+
+# Introduction générale 
+
+## Reférences
+
+- Cours M2 IGAST 2018 d'Ana-Maria Olteanu-Raimond 
+- R et espace https://framabook.org/r-et-espace/
+- Probabilités, analyse de données et statistiques , Gilbert Saporta, Editions TECHNIP, 2011
+- Nombreuses ressources en ligne, e.g. : 
+   http://www.foad-mooc.auf.org/IMG/pdf/424B_-Application_des_methodes_statistiques_d_analyse.pdf
+
+## Deux familles statistiques
+
+### Statistiques inférentielles
+  A partir d'un échantillon , que peut-on attendre (inférer) de la population ?
+  
+  - Modèles, estimateurs, ... : **régression** , **estimation**, **extrapolation**
+  - e.g. sondages, rencensement 
+
+## Deux familles statistiques
+  
+### Statistiques descriptives 
+  Pour décrire, résumer, synthétiser  les propriétés d'une **population** à partir de ses **individus** et des **variables** qui les décrivent.
+  
+  - Graphiques
+  - Mesures (fréquences, distributions, moments) sur des variables
+  - *Liaisons* statistiques entre variables : **corrélation**, **covariance**
+  - classification , ACP,...
+
+## Vocabulaire 
+ 
+### Population
+ **Ensemble** d'individus  
+ 
+ "données", "corpus", "échantillon", "data"
+ 
+### Individus
+ **Unité** statistique **élémentaire**: personnes, logements, ...
+ 
+ 
+  $\rightarrow$ "les lignes du tableau"
+
+## Vocabulaire 
+
+### Variables 
+ **Caractéristiques, propriétés** d’un individu, mesurées par des enquêtes, des observations...
+
+"les colonnes du tableau"  
+
+- **Qualitatives** : facteurs e.g. Sexe, CSP, type , notion de **modalité**
+ 
+- **Quantitatives** : nombres e.g. Taille, revenu, surface
+
+
+
+<span style="color:red">&#9888;</span> **Valeurs** et **Nature** de données sont deux choses distinctes. 
+<center> 3≠trois≠III </center>
+
+
+
+ <span style="color:red">&#9888;</span> Valeurs manquantes  
+ <center> NA , NaN, Null </center>
+
+
+
+
+
+## Analyse univariée {.flexbox .vcenter}
+
+**Décrire**  et **mesurer** la **répartition** des valeurs que peut prendre une variable.
+
+On parle de **distributions** ($\approx$ "histogramme en continu")
+
+Parfois certaines de ces répartitions s'approchent de  distributions bien connues (des **modèles**) : on parle de **lois**
+
+
+e.g. loi normale/gaussienne , loi de Poisson
+
+## Histogramme d'une variable suivant une loi normale $\mathscr{N}(0,1)$ 
+
+```{r gaussienne1, cache=TRUE, fig.width=8, fig.height=3.5}
+xx <- data.frame(value=rnorm(2600))
+plot1 <- ggplot(xx)+
+        geom_histogram(aes(x = value),bins = 50, color="#aaaaaa", fill="#44DD99" )+
+        theme_light()
+plot1
+```
+
+
+
+
+## Les pièges de la statistique {.flexbox .vcenter}
+
+> « Les statistiques ont une particularité majeure:
+elles ne sont jamais les mêmes selon qu’elles sont avancées par un homme de gauche ou par un homme de droite.»
+
+
+<div style="align:right;"> Jacques Mailhot</div>
+
+## Les pièges de la statistique : exemple 1 
+
+
+Dette 2013 = 100 milliards € 
+
+Article de 2015 n°1 : « Diminution du déficit: La dette de la France, qui avait augmenté de 15 % l’an passé, n’a augmenté cette année que de 14%. Le gouvernement se félicite de sa gestion exemplaire.»  
+
+Article de 2015 n°2 : « Augmentation du déficit: 15 milliard l’an passé, il dépasserait cette année 16 milliard €»
+
+Qui dit la vérité? 
+
+
+
+
+## Les pièges de la statistique:  exemple 2 
+
+
+Sur les mêmes chiffres du bilan d’une entreprise en 2013 et 2014
+
+* syndicats: «tous les salaires ont baissé de 10%»
+* dirigeants:  «le salaire moyen a augmenté d’environ 18%»
+
+
+|               |   Ouvriers    |           Cadres   |       
+|:--------------|--------------:|-------------------:|
+| 2013          | effectif : 500| effectif : 100      |
+|               | salaire : 1300|  salaire :2200       |
+| 2014          | effectif : 200           |        effectif :  400        |
+|               | salaire :1170          | salaire :        1980       |
+
+
+
+## Les précautions à prendre 
+
+### Taille et représentativité de  l'échantillon
+
+### Présences de groupes (paradoxe de Simpsons)
+
+
+## Analyse univariée 
+
+Objectif : **Décrire la répartition des valeurs** d'une variable
+
+### Mesures de **tendance centrale**
+
+mode, moyenne, médiane
+
+### Mesures de **dispersion**
+
+étendue, écart-type, variance, quantiles, coefficient de variation
+
+### Mesures de **forme**
+
+symétrie (Skewness) et aplatissement (Kurtosis) 
+ 
+
+
+
+
+## Les variables (1)
+
+### Données "non spatiales"" 
+
+Les variables sont des valeurs attributaires d'individus, leurs localisation n'est pas prise en compte
+
+### Données spatiales
+  
+  Individus restreints spatialement (**selection spatiale**), ou variables de **localisation** géographique (e.g. Lieu de résidence, coordonnées) renseignées pour les individus 
+  
+  
+  
+  quid des **distances** ? $\rightarrow$ modèle gravitaire , réseau etc.
+
+
+## Variables **quantitatives**
+
+Exemple ?
+
+### variables quantitatives **continues** : $var \in \mathbb{R}$
+
+Valeurs réelles,  toutes les valeurs de l'intervalle de mesures peuvent exister 
+
+### variables quantitatives **discrètes**  : $var \in \mathbb{N}$ 
+
+Valeurs entières, pour des attributs **dénombrables** (comptage) , 
+
+parfois utilisées pour encoder une variable qualitative à 2 modalité e.g. présence (1) , absence(0)
+
+
+## Variables **qualitatives**
+
+Exemple ? 
+
+<br>
+
+les valeurs sont prises dans un ensemble **fini** de valeurs possibles, défini par **extension** (i.e. on donne la liste des valeurs possibles)
+
+
+$\rightarrow$ notion de **modalités** 
+
+## Variables **qualitatives**
+
+
+### variables qualitatives **nominales**
+
+
+
+
+## Construction de la distribution théorique.
+
+On commence par sommer les effectifs selon les modalités (en ligne et en colonne)
+
+$$\begin{array}{c|c|c|c}
+   & blanc & noir & \texttt{total}\\ 
+   \hline
+carré &  22 &   12 & 34\\ 
+  \hline
+  rond &   10 &  30 &  40  \\ 
+    \hline
+  triangle &  26 &   5 &  31\\
+  \hline
+  \texttt{total} & 58 & 47 & 105
+  \end{array}$$
+
+On appelle les sommes en lignes et en colonnes **sommes marginales**, elles sont mises dans les "marges" du tableau.
+
+
+
+
+
+
+
+
