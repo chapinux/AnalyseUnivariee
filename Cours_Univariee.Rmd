@@ -402,7 +402,36 @@ Plusieurs modes dans la distribution ?<br>
 $\rightarrow$ classification puis mediane / moyenne par classe
 
 
+## Distribution bimodale 
 
+```{r bimod1, cache=TRUE, fig.width=8, fig.height=3.5}
+xx <- data.frame(value=rnorm(1600,mean = 5, sd = 1))
+yy <- data.frame(value= rnorm(1400, mean = 10, sd=2) )
+xx <-  rbind(xx, yy)
+plot1 <- ggplot(xx)+
+        geom_line(aes(x = value),stat = "density", color="#44DD99", lwd= 1.3)+
+        geom_vline(xintercept = mean(xx$value), color="red")+
+        geom_vline(xintercept = median(xx$value),color="blue")+
+        annotate("text", x=c(8,5.5), y=c(0.2,0.2), colour=c("red","blue"),label=c("mean", "median"))+
+        theme_light()
+plot1
+```
+
+
+
+
+## Distribution unimodale symétrique 
+
+```{r gaussienne2, cache=TRUE, fig.width=8, fig.height=3.5}
+xx <- data.frame(value=rnorm(2600,mean = 5, sd = 1))
+plot1 <- ggplot(xx)+
+        geom_line(aes(x = value),stat = "density", color="#44DD99", lwd= 1.3)+
+        geom_vline(xintercept = mean(xx$value), color="red")+
+        geom_vline(xintercept = median(xx$value) + 0.02,color="blue")+
+        annotate("text", x=c(4.5,5.5), y=c(0.2,0.2), colour=c("red","blue"),label=c("mean", "median"))+
+        theme_light()
+plot1
+```
 
 
 # Statistiques descriptives univariées : la dispersion
