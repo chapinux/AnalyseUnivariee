@@ -17,6 +17,10 @@ library(dplyr)
 
 # Introduction générale 
 
+## Avertissement  {.flexbox .vcenter}
+
+ <span style="color:red">&#9888;</span>  Pour voir les formules, une connexion internet est requise.  <span style="color:red">&#9888;</span> 
+
 ## Reférences
 
 - Cours M2 IGAST 2018 d'Ana-Maria Olteanu-Raimond 
@@ -28,9 +32,9 @@ library(dplyr)
 ## Deux familles statistiques
 
 ### Statistiques inférentielles
-  A partir d'un échantillon , que peut-on attendre (inférer) de la population ?
+  A partir d'un échantillon , que peut-on attendre (=**inférer**) de la population ?
   
-  - Modèles, estimateurs, ... : **régression** , **estimation**, **extrapolation**
+  - Modèles, estimateurs, ... : **régression**, **estimation**, **extrapolation**
   - e.g. sondages, rencensement 
 
 ## Deux familles statistiques
@@ -42,6 +46,13 @@ library(dplyr)
   - Mesures (fréquences, distributions, moments) sur des variables
   - *Liaisons* statistiques entre variables : **corrélation**, **covariance**
   - classification , ACP,...
+
+## Au programme dans ce module {.flexbox .vcenter}
+
+Nous ferons majoritairement de la statistique **descriptive**
+
+(même si, pour bien décrire, il faut parfois inférer)
+
 
 ## Vocabulaire 
  
@@ -103,7 +114,7 @@ plot1
 ```
 
 
-## Histogramme d'une distribution assymetrique à longue traîne.
+## Histogramme d'une distribution asymetrique à longue traîne.
 
 ```{r fat_tail1, cache=TRUE, fig.width=8, fig.height=3.5}
 xx <- data.frame(value=rlnorm(2600,sdlog = 0.5))
@@ -261,7 +272,7 @@ e.g. IRIS
 
 
 
-## Echelle d’analyse individuelle Vs Echelle d’analyse agrégée 
+## Echelle d’analyse individuelle vs. Echelle d’analyse agrégée 
 
 
   Inférer à partir de l’analyse de données agrégées des caractéristiques individuelles **Désagrégation** ou  **Ventilation** 
@@ -280,7 +291,7 @@ biais «sytématique et insoluble»
 
 TODO trouver un exemple carto genre vote 
 
-# Statistiques descriptives univariées : la tendance
+# Statistique descriptive univariée : la tendance
 
 ## Moyenne
 
@@ -330,7 +341,7 @@ Moins sensible à la présence de valeurs extrèmes
 $\displaystyle \bar{x} = \sqrt{\frac{1}{n}\prod _{i=0}^{n} x_i}$
 
 
-## Moyennes glissantes
+## Cas particulier : Moyenne glissante
 
 Moyenne calculée sur une fenètre de $n$ valeurs consécutives.
 
@@ -406,7 +417,7 @@ $\rightarrow$ classification puis mediane / moyenne par classe
 
 ## Distribution bimodale 
 
-```{r bimod1, cache=TRUE, fig.width=8, fig.height=3.5}
+```{r bimod1, cache=TRUE, echo=FALSE,fig.width=8, fig.height=3.5}
 xx <- data.frame(value=rnorm(1600,mean = 5, sd = 1))
 yy <- data.frame(value= rnorm(1400, mean = 10, sd=2) )
 xx <-  rbind(xx, yy)
@@ -419,7 +430,7 @@ plot1 <- ggplot(xx)+
 plot1
 ```
 
-
+Que choisir : moyenne ou médiane ? 
 
 
 ## Distribution unimodale symétrique 
@@ -436,7 +447,7 @@ plot1
 ```
 
 
-# Statistiques descriptives univariées : la dispersion
+# Statistique descriptive univariée : la dispersion
 
 ## La dispersion statistique 
 
@@ -485,7 +496,7 @@ Un écart-type faible indique que les valeurs sont réparties de façon **homog�
 (i.e. proche de la Gaussienne)
 
 
-## Lorsque $X \sim \mathscr{N}(\mu,\sigma) $
+## Lorsque $X\sim \mathscr{N}(\mu,\sigma)$
 
 ```{r stddev1, cache=TRUE}
 X <- data.frame(value=rnorm(1900))
@@ -501,8 +512,207 @@ plot1
 
 ## Quantiles
 
+La **médiane** sépare une population en **2** classes d'égal effectif selon la valeur d'une variable quantitative.
 
-# Statistiques descriptives univariées : la forme
+Les **quantiles**  séparent une population en **$n$** classes d'égal effectif.
+
+Les **quartiles** d'une population selon une variable $X$ sont 3 valeurs, $Q_1,Q_2,Q3$ qui séparent la population en 4 classes d'égal effectif.
+
+  * 25% des valeurs de $X$ sont strictement inférieures à $Q_1$
+  * 50% des valeurs de $X$ sont strictement inférieures à $Q_2$ (médiane)
+  * 75% des valeurs de $X$ sont strictement inférieures à $Q_3$
+    
+
+## Déciles
+
+Les déciles sont les **9** quantiles $Q_1,Q_2,\dots,Q_9$ qui séparent une population  selon la valeur d'une variable quantitative en **10** classes d'égal effectif.
+
+## Ecarts inter-quartiles et inter-déciles
+
+Deux mesures de la **dispersion** d'une distribution : 
+
+<br><br>
+**Écart inter-quartile**: $Q_3-Q_1$ , capture 50% des valeurs de la population les plus proches de la médiane
+
+<br><br>
+**Écart inter-déciile**: $Q_9-Q_1$ , capture 80% des valeurs de la population les plus proches de la médiane
+
+## Les boîtes à moustaches (boxplots)
+
+représentation courante de la dispersion d'une variable à l'aide de **quartiles**
+
+
+```{r boxplot1, cache=TRUE}
+plot1 <- ggplot(iris)+
+  geom_boxplot(aes(y=Sepal.Width,x= Species) ) + coord_flip()
+plot1
+```
+
+
+## Avantages et inconvénient des quantiles
+
+### Avantages
+
+Peu sensibles aux distributions aplaties et aux valeurs extrèmes
+
+L'écart inter-quantile est plus robuste que l'écart-type
+
+### Inconvénients
+
+Parfois délicat pour les variables quantitatives discrètes
+
+Les écarts inter-quantiles négligent l'influence des valeurs extrèmes sur la distribution
+
+## Le coefficient de variation 
+
+Le coefficient de variation ($CV$) est une autre mesure de **dispersion** .
+
+C'est le ratio entre l'écart-type $\sigma_x$ et la moyenne $\bar{x}$ d'une variable quantitative X.
+
+$\displaystyle CV(X)=\frac{\sigma_x}{\bar{x}}$
+
+Plus il est important , plus la dispersion est grande.
+
+Plus il est proche de 0, plus les données sont homogènes.
+
+
+Il souffre des mêmes inconvénients que la moyenne et l'écart-type : sensibilité aux valeurs extrèmes.
+
+## Comparaison de dispersion de deux distributions de valeurs.
+
+
+
+Exemple : deux communes  versent des aides aux entreprises locales. 
+
+Commune A :  moyenne = 390 euros, $\sigma$ = 30 euros 
+
+Commune B :  moyenne = 152 euros, $\sigma$ = 8 euros
+
+Pour quelle commune les aides sont les plus homogènes?
+
+On peut aussi comparer des distribution de valeurs exprimées dans des unités différentes !
+
+
+
+# Statistique descriptive univariée : la forme
+  
+## Asymétrie des distributions.
+
+
+```{r asym1, echo=FALSE, fig.width=8, fig.height=4, cache=TRUE}
+
+xx <- seq(-5,5, length.out = 100)
+normale <-  dnorm(xx,mean = 0, sd=1)
+xxx <- seq(0,10, length.out = 100)
+droite <-  dgamma(xxx,2,1)
+
+droiteValues <-  rgamma(1000,2,1)
+droiteValues <-  rgamma(1000,2,1)
+
+xxxx <-seq(10,0, length.out = 100) 
+gauche <- dgamma(xxxx, 2,1)
+mydata <- data.frame(value=xx, dens=normale, type="Normale", moy=0, med=0, mod=0)
+droitedata <- data.frame(value=xxx, dens=droite, type="Asymétrique positive", moy=mean(droiteValues), med=median(droiteValues), mod = 1)
+gauchedata <- data.frame(value=xxx, dens=gauche, type="Asymétrique négative", moy=10-mean(droiteValues), med=10-median(droiteValues), mod=9)
+
+gauchedata <- rbind( gauchedata, mydata)
+gauchedata <- rbind(gauchedata, droitedata)
+
+ggplot(gauchedata, aes(x=value, y=dens))+geom_line(color="#44DD99", lwd=1.2)+
+  geom_vline(aes(xintercept = moy), col="red")+
+  geom_vline(aes(xintercept = med), col="blue")+
+  geom_vline(aes(xintercept = mod), col="orange")+
+  facet_grid(cols=vars(type), scales="free")+
+  ylab(label = "density")+
+  theme_light()+
+  annotate("text", x=3.5, y=0.4, colour=c("red"),label="moyennne")+
+  annotate("text", x=3.5, y=0.37, colour=c("blue"),label="médiane")+
+annotate("text", x=3.5, y=0.34, colour=c("orange"),label="mode")
+```
+
+
+## les Coefficients de Pearson
+
+2 moyens simples d'estimer l'asymétrie 
+
+$\displaystyle C_1 = \frac{\bar{x} - mode(X)}{\sigma_x}$
+
+$\displaystyle C_2 = \frac{3(\bar{x} - mediane(X))}{\sigma_x}$
+
+## Interprétation des coefficients d'asymétrie
+
+  * si le coefficient **nul**, la distribution est **symétrique**
+  * si le coefficient est **négatif**, la distribution est **déformée à gauche** de la médiane (sur-représentation de valeurs faibles)
+  * si le coefficient est **positif**, la distribution est **déformée à droite** de la médiane (sur-représentation de valeurs fortes)
+
+## Le coefficient de Fischer
+
+Le coefficient est le moment  d'ordre 3  de la variable $X$ ( de moyenne $\mu$ et d'écart-type $\sigma$) **centrée réduite**
+
+$\displaystyle skewness'=\mathbb{E}\bigg[\bigg(\frac{X-\mu}{\sigma}\bigg)^3\bigg]=\frac{\sum_{i=0}^{n} (x_i - \bar{x})^3}{n\sigma^3}$
+
+
+
+## L'aplatissement des distributions (kurtosis)
+
+
+
+
+# Transormations des données 
+
+## Fat-tail distributions
+
+
+Les distributions très asymétriques et très étendues sont délicates à résumer : les indicateurs traditionnels sont plus efficaces lorsque la variabilité des valeurs est moindre, et leur distribution plus symétrique.
+
+
+e.g. Considérer la population moyenne des villes de France a-t'elle du sens ? 
+```{r histoVillesPop, cache=TRUE, echo=FALSE, fig.width=8, fig.height=4}
+mydata <-  read.csv("Pop_villes_françaises.csv")
+plot_PopVilles <- ggplot(mydata)+
+  geom_histogram(aes(x=Population.totale), bins=60 , color="#aaaaaa",fill="#44DD99" )+
+  geom_vline(xintercept = mean(mydata$Population.totale), color = "red")+
+  annotate("text", x=15000, y=400, colour=c("red"),label="moyennne = 7517.37 ")+
+  theme_light()
+plot_PopVilles
+```
+
+
+## Distribution rang-taille des villes de france 
+
+
+Pour mieux voir la distribution et les écarts, on trace la **taille** des villes en fonction de leur **rang** 
+
+```{r popVilles1 , cache = TRUE, fig.width=8, fig.height=4, echo=FALSE}
+mydata <-  read.csv("Pop_villes_françaises.csv")
+plot_PopVilles <- ggplot(mydata)+
+  geom_point(aes(x=rank(-Population.totale), y=Population.totale), color="#44DD99")+
+  xlab(label = "rang")+ylab("Population")+ggtitle("Distribution rang-taille des villes de France")+
+  theme_light()
+plot_PopVilles
+```
+
+## Transformation logarithmique
+
+Appliquer une transformation **monotone**, **bijective** et **inversible** qui "applatisse" la distribution , de façon à réduire les écarts entre les valeurs, et à resserrer  l'essentiel des valeurs , pour mesurer de façon plus robuste leur tendance, dispersion et forme
+
+Ici : le logarithme décimal
+
+
+## Bonus : distribution rang-log(taille) 
+
+```{r loglin1 , cache = TRUE, fig.width=8, fig.height=4, echo=FALSE}
+mydata <-  read.csv("Pop_villes_françaises.csv")
+plot_PopVilles <- ggplot(mydata)+
+  geom_point(aes(x=rank(-Population.totale), y=Population.totale), color="#44DD99")+
+  xlab(label = "rang")+ylab("Population")+ggtitle("Distribution rang-taille des villes de France")+
+  scale_y_log10()+
+  theme_light()
+plot_PopVilles
+```
+
+
+
 
 ## Construction de la distribution théorique.
 
