@@ -1,0 +1,84 @@
+---
+title: "Analyse Spatiale et Statistique TP1"
+author: "PC"
+date: "26 juillet 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(sf)
+library(ggplot2)
+library(dplyr)
+library(cartography)
+```
+
+
+**Objectif Principal** : Analyser et cartographier la distribution statistique et spatiale de données du développement durable 
+
+**Objectif Secondaire** : Se familiariser avec R et la librairie `sf` qui manipule les données géographiques.
+
+
+# Principe du TP
+
+## Outils 
+
+Les manipulations peuvent être effectuées avec PostGIS, QGIS et MS Excel et R .
+Dans ce support nous donnerons au fur et à mesure les corrigés des questions sous la forme d'extrait de script R, que vous pouvez reprendre et coller dans un script séparé
+
+
+## Provenance des  données
+
+Les données proviennent de l'INSEE , consultables [ici](https://www.insee.fr/fr/statistiques/2512993#consulter)
+
+> Pour une mesure du développement durable et pour permettre des comparaisons entre territoires, l'Insee propose 20 indicateurs régionaux et départementaux.
+> Outre les indicateurs de contexte économique (PIB, chômage), ils couvrent les dimensions du développement durable (économie, social, environnement et gouvernance) afin de permettre une analyse combinée de ces différents facteurs.
+
+
+Les données ont été nettoyées et extraites pour les départements, à partir du fichier original téléchargé sur le site de l'INSEE. Dans ce fichier .xls, le feuillet  `Documentation` donne des informations complémentaires sur chacune des variables.
+
+## Chargement des données.
+
+Nous commençons par les données contenues dans les fichiers `DD_economie.csv` 
+
+**N.B.** la fonction `read.csv` requiert le chemin d'accès au fichier, fourni sous sa forme relative ou absolue. Le repertoire de travail de R est défini par la commande `setwd("/chemin/vers/le/fichier")`. pour connaître le repertoire de travail courant, utiliser la fonction `getwd()` 
+
+
+```{r dataLoading2, cache =TRUE}
+DD_eco <- read.csv("DD_economie.csv", stringsAsFactors = F, sep = ",", na.strings = "NA")
+str(DD_eco)
+```
+
+
+L'objet crée par la fonction `read.csv` est un **dataframe**, c'est une structure de donnée à laquelle on peut accéder de multiples façon. L'une des plus courantes est l'extractions de colonnes. Lorsque les données sont en format *long*, une colone est une variable, une ligneest une observation (un individu).
+
+
+Nous renommons pour simplifier les noms de colonnes : 
+
+```{r dataLoading3,  cache =TRUE}
+names(DD_eco) <-  c("code_dep", "departement", "pct_emploi", "pct_jeunes_dip","DT_voiture","DT_tcp", "DT_autre", "pct_ess_emploi_terr")
+names(DD_eco)
+```
+
+
+Avec :
+
+  - `code_dep` : le code du département
+  - `departement` : le libellé du dpartement
+  - `pct_emploi` : le taux d'emploi (%)
+  - `pct_jeunes_dip` : la part de jeunes diplômés,
+  - `DT_voiture` : la proportion se rendant au travail en voiture (DT= comicile travail) (%)
+  - `DT_tcp` : la proportion se rendant au travail en transports en commun (%)
+  - `DT_autre` : la proportion se rendant au travail par un autre moyen (%)
+  - `pct_ess_emploi_terr` : Poids de l'économie sociale et solidaire dans les emplois salariés du territoire (%)
+
+## Aperçu des données 
+
+La fonction `head()`  permet d'observer les $n$ premières lignes d'un dataframe
+
+```{r head1,  cache =TRUE}
+head(DD_eco, 10) 
+```
+
+
+
