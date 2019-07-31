@@ -11,74 +11,354 @@ library(sf)
 library(ggplot2)
 library(dplyr)
 library(cartography)
+library(geojsonsf)
 ```
 
 
-**Objectif Principal** : Analyser et cartographier la distribution statistique et spatiale de données du développement durable 
-
-**Objectif Secondaire** : Se familiariser avec R et la librairie `sf` qui manipule les données géographiques.
-
-
-# Principe du TP
-
-## Outils 
-
-Les manipulations peuvent être effectuées avec PostGIS, QGIS et MS Excel et R .
-Dans ce support nous donnerons au fur et à mesure les corrigés des questions sous la forme d'extrait de script R, que vous pouvez reprendre et coller dans un script séparé
+Ce document montre l'essentiel des manipulations à effectuer avec R  pour répondre aux questions du TP1 d'Analyse Univariée. 
+Il suppose une connaissance préalable de la syntaxe R, de préférence à l'aide de l'IDE [RStudio](https://www.rstudio.com/) et les bases du package `sf` [tutoriel ici](https://r-spatial.github.io/sf/articles/sf1.html) qui implémente la norme SF comme dans PostGIS.
 
 
-## Provenance des  données
-
-Les données proviennent de l'INSEE , consultables [ici](https://www.insee.fr/fr/statistiques/2512993#consulter)
-
-> Pour une mesure du développement durable et pour permettre des comparaisons entre territoires, l'Insee propose 20 indicateurs régionaux et départementaux.
-> Outre les indicateurs de contexte économique (PIB, chômage), ils couvrent les dimensions du développement durable (économie, social, environnement et gouvernance) afin de permettre une analyse combinée de ces différents facteurs.
+La connaissance du  package `dplyr` et de sa notation à base de pipe (%>%) sera utile pour écrire des chaînes de traitements plus concises que celle listées ici.
 
 
-Les données ont été nettoyées et extraites pour les départements, à partir du fichier original téléchargé sur le site de l'INSEE. Dans ce fichier .xls, le feuillet  `Documentation` donne des informations complémentaires sur chacune des variables.
 
 ## Chargement des données.
 
-Nous commençons par les données contenues dans les fichiers `DD_economie.csv` 
+Nous avons récupéré le fichier des données spatialisé sous le format GeoJSON. D'autres formats sont disponibles, notamment via une API.
 
-**N.B.** la fonction `read.csv` requiert le chemin d'accès au fichier, fourni sous sa forme relative ou absolue. Le repertoire de travail de R est défini par la commande `setwd("/chemin/vers/le/fichier")`. pour connaître le repertoire de travail courant, utiliser la fonction `getwd()` 
+Pour lire le GeoJSON , nous avons besoin d'installer un package spécifique : `geojsonsf`, qui se charge de la conversion entre des objets geographiques au format GeoJSON et leur représentation au format géographique `sf`, très commode.   
+Pour manipuler les objets spatiaux, nous devons aussi installer la librairie `sf`. 
+Il nous faut ensuite charger ces librairie. Cela se fait au moyen des fonctions `install.packages("nom_du_package")` et `library(nom_du_package)`
+
+```{r setuplib1, eval=FALSE,cache =TRUE}
+install.packages("geojsonsf")
+library(geojsonsf)
+install.packages("sf")
+library(sf)
+```
+
+
+
+Puis nous chargeons les données à l'aide de la fonction `geojson_sf`().  
+
+-----
+
+**N.B.** la fonction `geojson_sf` requiert le chemin d'accès au fichier, fourni sous sa forme relative ou absolue. Le repertoire de travail de R est défini par la commande `setwd("/chemin/vers/le/fichier")`. 
+Pour connaître le repertoire de travail courant, utiliser la fonction `getwd()` 
+
+
+**N.B.** le nombre de lignes et les valeurs de données qui apparaissent dans ce support peuvent varier, les données étant mises à jour régulièrement suir le site opendata.paris.fr 
+
+-----
+
+Le chargement du fichier peut être un peu long: il contient 203818 observations. Pour connaitre la structure de l'objet , nous utilisons la fonction `str()` qui nous donne un aperçu du type des colonnes du dataframe que nous manipulons. 
+C'est un dataframe particulier puisqu'il est de la classe `sf` : l'un de ses colonnes est dédié à la description de sa géométrie (ici, des points 2D)
 
 
 ```{r dataLoading2, cache =TRUE}
-DD_eco <- read.csv("DD_economie.csv", stringsAsFactors = F, sep = ",", na.strings = "NA")
-str(DD_eco)
+arbres <- geojson_sf("les-arbres.geojson")
+names(arbres) # affiche le nom des colonnes (variables)
 ```
 
 
-L'objet crée par la fonction `read.csv` est un **dataframe**, c'est une structure de donnée à laquelle on peut accéder de multiples façon. L'une des plus courantes est l'extractions de colonnes. Lorsque les données sont en format *long*, une colone est une variable, une ligneest une observation (un individu).
-
-
-Nous renommons pour simplifier les noms de colonnes : 
-
-```{r dataLoading3,  cache =TRUE}
-names(DD_eco) <-  c("code_dep", "departement", "pct_emploi", "pct_jeunes_dip","DT_voiture","DT_tcp", "DT_autre", "pct_ess_emploi_terr")
-names(DD_eco)
-```
-
-
-Avec :
-
-  - `code_dep` : le code du département
-  - `departement` : le libellé du dpartement
-  - `pct_emploi` : le taux d'emploi (%)
-  - `pct_jeunes_dip` : la part de jeunes diplômés,
-  - `DT_voiture` : la proportion se rendant au travail en voiture (DT= comicile travail) (%)
-  - `DT_tcp` : la proportion se rendant au travail en transports en commun (%)
-  - `DT_autre` : la proportion se rendant au travail par un autre moyen (%)
-  - `pct_ess_emploi_terr` : Poids de l'économie sociale et solidaire dans les emplois salariés du territoire (%)
 
 ## Aperçu des données 
 
 La fonction `head()`  permet d'observer les $n$ premières lignes d'un dataframe
 
 ```{r head1,  cache =TRUE}
-head(DD_eco, 10) 
+head(arbres, 10) 
+```
+
+## Projeter et Afficher les données
+
+La librairie `sf`  surcharge la fonction d'affichage par défaut de R , `plot`, pour afficher la géométrie des données comme un objet géographique et non comme un nuage de points ou une courbe.
+Auparavant , nous devons fixer le système de coordonnées de références de l'objet, pour que les données soient correctement projetées à l'affichage.
+
+La fonction `st_crs()` appliquée sur un objet spatial retourne son CRS s'il est défini , ou permet de fixer avec l'opérateur d'affectation `<-`.
+Nous allons utiliser Lambert 93 (EPSG 2154)
+
+```{r proj1,  cache =TRUE}
+st_crs(arbres) 
+arbres <- st_transform(arbres,2154)
+arbres <- st_set_crs(arbres, 2154)
+st_crs(arbres)  # nouveau CRS de l'objet après transormation
+```
+
+
+Nous pouvons maintenant afficher les données avec la fonction `plot`
+
+```{r plot1, eval=F, cache =TRUE}
+plot(arbres)
 ```
 
 
 
+C'est très long ! 
+Celà est dû au fait que la fonction `plot` affiche autant de cartes que de variables (colonnes) de l'objet spatial.
+
+
+pour le moment nous n'allons que tracer la géométrie des données : l'attribut `geometry` de l'objet 
+
+
+```{r plot2,  cache =TRUE}
+plot(arbres$geometry, cex = 0.01)
+```
+
+Tout autre attribut peut être choisi , la fonction de dessin de R se charge de trouver une échelle de couleur en fonction des valeurs que prend la varaible.
+
+```{r plot3,  cache =TRUE}
+plot(arbres["arrondissement"], cex = 0.01, graticule=T)
+```
+
+
+La sequence de commande suivantes transforme l'attributs `arrondissement` en **facteurs** et filtre les données de façon à ne conserver que les arrondissements de Paris intra muros.
+
+```{r levels,  cache =TRUE}
+arbres$arrondissement <- as.factor(arbres$arrondissement)
+levels(arbres$arrondissement) #pour connaître les modalités de la variable
+arbres_intramuros <-  filter(arbres, !(arrondissement %in% c("BOIS DE BOULOGNE",  "BOIS DE VINCENNES", "HAUTS-DE-SEINE", "SEINE-SAINT-DENIS", "VAL-DE-MARNE")))
+arbres_intramuros$arrondissement <-  as.character(arbres_intramuros$arrondissement) 
+arbres_intramuros$arrondissement <- as.factor(arbres_intramuros$arrondissement)
+levels(arbres_intramuros$arrondissement)
+```
+
+
+On peut maintenant tracer les positions des  arbres de Paris intra-muros, après avoir défini le CRS de cette couche par la fonction `st_crs()`
+
+```{r arrond, cache=TRUE}
+st_crs(arbres_intramuros)
+plot(arbres_intramuros["arrondissement"], cex=0.1)
+```
+
+
+## Données vectorielles des quartiers de Paris.
+
+
+Nous allons maintenant charger les contours des quartiers de Paris, disponibles sur (https://opendata.paris.fr/explore/dataset/quartier_paris/information/). Chaque arrondissement contient 4 quartiers, on a donc 80 unités spatiales à considérer.
+
+
+```{r contours, cache=TRUE}
+quartiers <-(read_sf("quartier_paris.shp"))
+quartiers <- st_transform(quartiers, 2154)
+quartiers <-  st_set_crs(quartiers,2154)
+
+plot(st_geometry(quartiers))
+plot(arbres_intramuros["arrondissement"], add=TRUE, alpha=0.5, cex=0.1  )
+```
+
+
+## Cartographie simple
+
+Pour tracer un objet spatial , il suffit d'appliquer la fonction `plot()`  sur cet objet.
+Cette fonction peut également colorer la géométrie de l'objet en fonction d'une variable
+
+### Les 6 genres d'arbres les plus représentés
+
+
+Nous utilisons les fonctions `count`du package `dplyr`,   pour compter les nombre d'arbre par genre. (c'est l'quivalent d'un `group_by`, suivi d'une aggregation `count`)
+Nous utilisons la fonction `top_n` du package `dplyr` pour selectionner les 6 genres les plus représentés.
+Nous utilisons la fonction `filter` et l'operateur `%in%` pour ne conserver que les arbres de ces six genres.
+
+```{r top6}
+count_by_genre <-  count(arbres_intramuros,genre, libellefrancais, sort = T,name = "nb_indiv")
+head(count_by_genre, 10)
+six_genres <-  top_n(count_by_genre,6,nb_indiv)
+head(six_genres)
+```
+
+L'immense avantage du package `sf` est que que les géométries ont été conservées lors des manipulation de regrouppement , filtrage etc. 
+Il n'est donc pas nécessaire de refaire les opérations sur les géométries , qui ont été transmises aux résultats lors des opérations `count` et `top_n`.
+```{r top6_2}
+plot(six_genres["libellefrancais"], 
+     key.pos=1, cex=0.2, 
+     key.length = 0.7,
+     main="Les six genres d'arbres les plus représentés à Paris")
+```
+
+
+Que peut-on dire de l'implantation de ces 6 genres ? 
+
+
+
+### La domanialité
+
+Afficher cette variable est immédiat. La légende est perfectible pour le moment; pour faire une vraie carte , voir à la fin du support l'utilisation du package `cartography`.
+
+```{r domani}
+plot(arbres_intramuros["domanialite"], 
+     key.pos=4, cex=0.2, 
+     key.length = 1,
+     key.width = lcm(4.5),
+     main="Domanialité des arbres de Paris")
+```
+
+
+## Calcul du nombre d'arbres par quartier
+
+### Aggregation spatiale 
+
+On peut faire la jointure spatiale avec le dataframe `arbres_intramuros`, pour inclure les informations de quartiers aux arbres à l'aide de la relation spatiale `st_within`
+
+```{r spat_join, cache=TRUE}
+arbres_in_quartiers <- st_join(arbres_intramuros,quartiers, join=st_within)
+nrow(arbres_in_quartiers) 
+```
+
+On obtient alors un nouveau dataframe spatial, contenant les 163367 arbres situés dans les quartiers intramuros, et augmentés des variables issues du dataframe `quartier`.
+
+On peut alors compter le nombre d'arbres par quartiers avec la fonction `table` qui compte (entre autres) le nombre d'individus (ligne) par valeurs distinctes d'une de ses variables. On peut étendre le nombre de variables pour obtenir des tables de contingence.
+
+```{r aggreg, cache=TRUE}
+nb_arbres_by_quartier <- table(arbres_in_quartiers$c_qu)
+```
+
+Pour ajouter cette information au dataframe `quartiers`, l'une des possibilité est de trier le dataframe par son code de quartier `c_qu` puis d'ajouter la colonne `nb_arbres_by_quartiers` obtenue précédemment.
+
+on peut par exemple utiliser la fonction `arrange` du package `dplyr`
+
+```{r addnbtrees, cache=TRUE}
+quartiers <-  arrange(quartiers,c_qu)
+quartiers$nb_arbres <-  nb_arbres_by_quartier
+```
+
+Avant de cartographier cette valeur, regardons sa distribution à l'aide d'un histogramme pour déterminer si un traitemment particulier doit être envisagé (en cas de distribution particulièrement biscornue)
+
+```{r hist2, cache=TRUE}
+hist(quartiers$nb_arbres,breaks = 10)
+```
+
+## Carte choroplète du nombre d'arbres (mauvaise pratique)
+
+```{r choro1, cache=TRUE}
+plot(quartiers["nb_arbres"], main=NULL, key.pos = 4)
+title("Nombre d'arbres par quartier administrif de Paris",sub = "Représentation sémiologiquement discutable" )
+```
+
+## "Raster" du nombre d'arbres
+
+Pour réaliser une sorte de raster, nous allons créer une grille qui couvre la zone d'étude, et projeter les points du semis (le dataframe `arbres_intramuros`) dans les cellules créées (c'est également une façon d'approcher une carte de densité 2D de façon discrète)
+
+Afin de ne pas faire une grille qui couvre la boîte englobante de la zone d'étude, mais que la grille ne couvre que les géométries de chaque quartier, on réalise une intersection entre la grille raster et l'enveloppe des quartiers.
+
+**N.B.** ce n'est pas la façon canonique de réaliser un raster, pour cela il faut utiliser la library `raster` et réaliser le raster à partir  l'aide de la fonction 
+
+
+```{r raster, cache=TRUE}
+rast1 <- st_make_grid(quartiers, square = TRUE, n=40, what="polygons") ## raster de 1600 cellules
+plot(quartiers$geometry)
+plot(rast1,  add=T)
+
+#restriction du raster à la geométrie des quartiers par intersection avec son enveloppe
+envelop_qu <-  st_union(quartiers)
+plot(envelop_qu)
+rast2 <-  st_intersection(envelop_qu, rast1) ## raster de 1065 cellules
+
+# on retransforme l'objet rast2 qui est une collection (sfc) en objet sf
+rast2 <- st_sf(rast2)
+plot(rast2)
+
+
+#on récupère les points contenus dans les cellules
+predicat_intersect <- st_contains(rast2,arbres_intramuros)
+
+#on compte le nombre de points par cellules avec la fonction length
+rast2$nb_arbres <- unlist(lapply(predicat_intersect, length)) 
+hist(rast2$nb_arbres)
+plot(rast2)
+
+
+```
+
+A quoi correspondent les cellules jaunes ? 
+
+On peut réitérer le processus en changeant la taille de la grille ou le type de grille (hexagonale)
+
+
+
+```{r rasterVariations, cache=TRUE}
+rast1 <- st_make_grid(quartiers, square = TRUE, n=80)
+rast2 <-  st_intersection(envelop_qu, rast1) 
+rast2 <- st_sf(rast2)
+predicat_intersect <- st_contains(rast2,arbres_intramuros)
+rast2$nb_arbres <- unlist(lapply(predicat_intersect, length)) 
+
+plot(quartiers$geometry, border="white", bgc="#222222"  )
+plot(rast2, border=NA, key.pos=4, add=T)
+plot(quartiers$geometry, border="white", bgc="#222222", add=T, alpha=0.8,lwd=0.3,key.pos=4)
+```
+
+
+```{r rasterVariationHex, cache=TRUE}
+rasthex <- st_make_grid(quartiers, square = FALSE, n=60, what="polygons")
+rasthex <- st_sf(rasthex)
+#les hexagones s'arrètent à l'evloppe, pas besoin de la créer
+predicat_intersect <- st_contains(rasthex,arbres_intramuros)
+rasthex$nb_arbres <- unlist(lapply(predicat_intersect, length)) 
+
+plot(quartiers$geometry,bgc="#222222")
+plot(rasthex,  key.pos=4, add=T, lwd=0.2)
+plot(quartiers$geometry, border="white", bgc="#222222", add=T, alpha=0.8,lwd=0.3,key.pos=4)
+```
+
+
+On peut noter que le changement de découpage de l'espace dû à la taille ou la forme des cellules change l'aspect de la carte. 
+
+
+## Calcul et cartographie de la densité d'arbres par quartiers 
+
+Pour calculer la densité d'arbres par quartier, nous devons compter le nombre d'arbres par quartier, et diviser ce nombre par la surface du qartier.
+
+Nous avons déjà ajouté un attribut `nb_arbres` à l'objet `quartiers`.
+L'objet `quartier` contient aussi un attribut surface, issu des données brutes.
+On doit d'abord vérifier que cette valeur est correcte (la projection des données est équivalente) en calculant l'aires des quartiers et en les comparant à l'attribut pré-existant
+
+
+
+```{r delta_surf, cache =TRUE}
+ecarts <-  as.numeric(st_area(quartiers)) - quartiers$surface
+ecarts
+```
+
+Les écarts sont très faibles (de l'ordre de $10^{-5}m^2$) , suffisamment pour  que l'attribut `surface` soit directement utilisé pour le calcul de la densité.
+
+On crée une variable `dens` dans l'objet quartier dont la valeur est le ratio entre la variable `surface` et la variable `nb_arbres`. On aura vérfié auparavant qu'il n'y a pas de valeurs manquantes dans l'objet , avec la fonction `anyNA()`
+
+```{r dens}
+quartiers$dens <- quartiers$nb_arbres / quartiers$surface
+plot(quartiers["dens"], main="Densité d'arbres par quartier")
+```
+
+Connaissant l'implantation des arbres et la formes des quartiers , que dire des densité des quartiers sud-ouest et sud-est ?
+
+Quel est le quartier le plus dense ?
+
+```{r topdens,caceh=TRUE}
+quartiers %>% top_n(1,dens)
+```
+
+
+### Cartographie par symboles proportionnels
+
+Pour utiliser des symboles proportionnels , nous devons utiliser un package spécifique : `cartography`.
+Dans ce package , l'ajout de couche au dessin courant est activé par défaut (`add=TRUE`) 
+
+
+```{r cerclesprop}
+library(cartography)
+plot(quartiers$geometry, bgc="#888888", border="white", lwd=0.3)
+propSymbolsLayer(quartiers,var = "nb_arbres", inches = 0.15, legend.pos = NA)
+# couches de disposition des légendes et du texte
+layoutLayer(title = "Nombre d'arbres à Paris par quartier",  
+            frame =F, north = TRUE, author="M2 IGAST2019-2020",
+            sources = "Opendata.paris.fr 2019", 
+            scale = 50)
+legendCirclesSymbols(pos = "topleft", title.txt = "nombre d'arbres", title.cex = 0.8, cex = 1,
+  border = "black", lwd = 1, values.cex = 0.6, var=c(50,1000,3500,7000), inches=0.15,
+  col = "#E84923", frame = FALSE, values.rnd = 0, style = "c")
+
+```
+
+
+Le package `cartography` est un excellent package, que je recommande vivement.
