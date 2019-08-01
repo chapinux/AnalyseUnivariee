@@ -1,0 +1,160 @@
+---
+title: "TP1 Analyse Univariée"
+subtitle: "M2 IGAST 2019-2020"
+author: ""
+date: ""
+output: 
+  pdf_document :
+    number_sections: true    
+urlcolor: blue
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+**Objectif principal** : Analyser et cartographier la distribution statistique et spatiale des arbres dans Paris 
+
+**Objectif secondaire** :  Préparer les données pour la classification 
+
+## Les données 
+
+
+### Arbres
+
+Les données proviennent du site opendata.paris.fr [(url)](https://opendata.paris.fr/explore/dataset/les-arbres/information/) 
+
+Ils sont disponibles en plusieurs formats (KML, geoJSON, SHP, CSV ,...)
+
+les variables du jeu de données  sont :
+
+ * _remarquable_ : le caractère remarquable (1) ou non (0) de l'arbre; contient des valeurs NA.
+ * _circonferenceencm_ : la circonférence en centimètres du tronc de l'arbre 
+ * _stadedeveloppement_ : stade de développement $\in$ {"A" , "J" , "JA" ,"M"}  ; contient des valeurs NA.
+ * _genre_ : nom latin du genre de l'arbre, 175 modalités, ; contient des valeurs NA.
+ * _idbase_ : identifiant unique de l'arbre.
+ * _arrondissement_ : libellé de l'arrondissement où se trouve l'arbre, ainsi que les zones "BOIS DE BOULOGNE", "BOIS DE VINCENNES", "HAUTS-DE-SEINE", "SEINE-SAINT-DENIS" , "VAL-DE-MARNE"
+ * _idemplacement_  : code de l'emplacement de l'arbre, non unique.
+ * _geo_point_2d_ : coordonnées [X,Y] de l'arbre en texte brut e.g.[48.8409288153,2.27798983391]
+ * _geometry_ : attribut géometrique de l'arbre : simple feature de classe POINT (XY)
+ * _adresse_ : libellé de l'adresse de l'emplacement de l'arbre 
+ * _libellefrancais_ : libellé de l'espèce de l'arbre e.g. "BOULEVARD SAINT GERMAIN"
+ * _complementadresse_ :  complément de l'adresse, souvent le numéro; contient des valeurs NA
+ * _domanialite_ : type de localisation de l'arbre $\in$ {"Alignement","CIMETIERE","DAC","DASCO",
+ "DASES","DFPE","DJS","Jardin","PERIPHERIQUE"}
+ * _typeemplacement_ : variable constante égale à "Arbre"
+ * _hauteurenm_ : hauteur en mètres 
+ * _varieteoucultivar_ : variété de l'arbre, 453 modalités, contient des valeurs NA
+ * _espece_ : espèce de l'arbre, 537 modalités; contient des valeurs NA            
+
+ Précison sur la hiérarchie des types d'arbres :  l'ordre est Genre > Espèce > Variété (ou cultivar)
+ 
+ 
+
+### Contour des quartiers administratifs
+
+Les contours des quartiers proviennent également du site opendata.paris.fr [(url)](https://opendata.paris.fr/explore/dataset/quartier_paris/information/)
+Chaque arrondissement est constitué de 4 quartiers.
+
+Les variabels disponibles sont : 
+
+* _n_sq_qu_ : identifiant séquentiel du quartier, constitué de la concaténation de 75000 et du code de quartier 
+* _c_qu_ : code du quartier , valeur entière $\in [1;80]$
+* _c_quinsee_ : Numéro INSEE du quartier, valeur entière. format 751AAQQ avec AA le numéro d'arrondissement $\in[1;20]$ et QQ le numéro de quartier  $\in[1;4]$
+* _l_qu_ : libellé du quartier , e.g. "La Chapelle"
+* _c_ar_ : numéro d'arrondissement , valeur entière $\in[1;20]$
+* _n_sq_ar_ : identifiant séquentiel de l'arrondissement , $\in[750000001;750000020]$, format 7500000AA avec AA le numéro de l'arrondissement. 
+* _perimetre_ : périmètre de la géométrie du quartier 
+* _surface_  : aire de la géométrie du quartier 
+* _geometry_ : attribut géometrique du quartier : simple feature de classe POLYGON
+
+
+
+
+## Outils 
+
+Les manipulations peuvent être effectuées avec PostGIS, QGIS et MS Excel et R .
+
+
+# Distribution statistiques des arbres
+
+Vous disposez de deux jeux de données : 
+
+* le contours des quartiers de paris (vectoriel, polygones)
+* l'implantation et les variables des arbres de Paris (vectoriel, ponctuel)
+
+## Calculer le nombre d'arbres par quartier
+
+Étapes :
+
+  - identifier les données pertinentes pour réaliser ce calcul
+  - réaliser une jointure spatiale (laquelle ? ) 
+  - calculer le nombre d'arbres par quartier
+  - stocker le résutat dans une variable _nb_arbres_ dans la couche vectorielle des quartiers
+  
+## Calculer la densité d'arbres par quartier
+
+Étapes:
+
+  - étapes précédentes
+  - calculer la surface des quartiers (certes elle existe déjà, mais on ne sait pas comment elle a été calculée. E.g. la projection est-elle équivalente ?)
+  - calculer la densité d'arbres par quartiers
+  - stocker le résutat dans une variable _dens_arbres_ dans la couche vectorielle des quartiers
+  
+## Comparaison des variables 
+
+Étapes :
+
+  - Calculer la moyenne et l'écart-type du nombre et de la densité d'arbres
+  - Afficher les histogrammes de ces deux variables 
+  - Calculer les indicateurs de formes des distributions de ces deux variables 
+
+Commenter les résultats obtenus
+
+# Distribution spatiale des arbres 
+
+## Carte(s) simple(s) 
+
+  Réaliser une carte simple des arbres des six genres les plus représentés dans la population
+  
+  Réaliser une carte simple des arbres en faisant apparaître la variable _domanialite_ de façon à représenter le type d'implantation des arbres
+
+
+Commenter les cartes obtenues
+
+## Cartographie du nombre d'arbres 
+
+Vous pouvez au choix :
+
+  - réaliser un carte choroplète du nombre d'arbre par quartier (cartographier un nombre est déconseillé, pourquoi ?)
+  - réaliser une carte de chaleur du nombre d'arbres sur une grille raster 
+  - réaliser une carte avec des symboles proportionels représentant le nombre d'arbres par quartier
+
+Commenter les cartes obtenues
+
+## Cartographie de la densité d'arbres
+
+Etapes : 
+  
+  - Réaliser une classification des densités en faisant varier la méthode de classification
+  - Cartographier la classification qui semble la plus adaptée 
+
+Commenter la carte obtenue
+
+# Export des données 
+
+Exporter les données ajoutées (nombre et densité d'arbres) dans la couche vectorielle des quartiers de paris (format SHP ou CSV)
+
+
+# Devoir (trop dur ?)
+
+
+A l'aide des données de voiries de Paris [disponible ici](https://opendata.paris.fr/explore/dataset/voie/export/), peut-on établir un lien entre le genre des arbres et leur distance à la voirie la plus proche ? 
+
+
+
+
+
+

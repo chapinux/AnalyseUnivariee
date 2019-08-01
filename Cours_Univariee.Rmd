@@ -21,13 +21,15 @@ library(dplyr)
 
  <span style="color:red">&#9888;</span>  Pour voir les formules, une connexion internet est requise.  <span style="color:red">&#9888;</span> 
 
+
 ## Reférences
 
 - Cours M2 IGAST 2018 d'Ana-Maria Olteanu-Raimond 
 - R et espace https://framabook.org/r-et-espace/
 - Probabilités, analyse de données et statistiques , Gilbert Saporta, Editions TECHNIP, 2011
 - Nombreuses ressources en ligne, e.g. : 
-   http://www.foad-mooc.auf.org/IMG/pdf/424B_-Application_des_methodes_statistiques_d_analyse.pdf
+    - http://www.foad-mooc.auf.org/IMG/pdf/424B_-Application_des_methodes_statistiques_d_analyse.pdf
+    - http://www.itse.be/statistique2010/co/Module_statistique_FSP.html
 
 ## Deux familles statistiques
 
@@ -54,7 +56,8 @@ Nous ferons majoritairement de la statistique **descriptive**
 (même si, pour bien décrire, il faut parfois inférer)
 
 
-## Vocabulaire 
+# Vocabulaire & Contexte
+
  
 ### Population
  **Ensemble** d'individus  
@@ -172,7 +175,11 @@ Sur les mêmes chiffres du bilan d’une entreprise en 2013 et 2014
 ### Présences de groupes (paradoxe de Simpsons)
 
 
+<<<<<<< HEAD
 ## Analyse univariée 
+=======
+## Analyse univariée : plan du cours
+>>>>>>> c2c369ccacc7516c1aebecf083e28b0e7a64f6ff
 
 Objectif : **Décrire la répartition des valeurs** d'une variable
 
@@ -338,7 +345,7 @@ Moins sensible à la présence de valeurs extrèmes
 ### Moyenne quadratique (RMS) 
 <br>
 
-$\displaystyle \bar{x} = \sqrt{\frac{1}{n}\prod _{i=0}^{n} x_i}$
+$\displaystyle \bar{x} = \sqrt{\frac{1}{n}\sum _{i=0}^{n} x_i^2}$
 
 
 ## Cas particulier : Moyenne glissante
@@ -379,7 +386,7 @@ Comme en géométrie, la médiane est la valeur de la variable qui est la plus p
 ### Etapes de calcul 
 Ordonner les valeurs selon un ordre croissant
 
-Calculer le rang $i=\frac{n+1}{2}$$
+Calculer le rang $i=\frac{n+1}{2}$
 
 si $n$ impair, la valeur médiane existe dans la série statistique
 
@@ -393,7 +400,7 @@ Plus pertinente que la moyenne
 
 Peu sensible aux valeurs extrêmes 
 
-A une signification concrète : qui divise en deux la distribution : un individu sur deux a une valeur inférieure ou supérieure à celle-ci
+A une signification concrète : divise en deux la distribution : un individu sur deux a une valeur inférieure ou supérieure à celle-ci
 
 ### Inconvénient 
 Ne dépend pas de toutes les observations : la modification d'une seule valeur n’entraine pas une modification de la médiane 
@@ -659,6 +666,69 @@ $\displaystyle skewness'=\mathbb{E}\bigg[\bigg(\frac{X-\mu}{\sigma}\bigg)^3\bigg
 
 
 # Transormations des données 
+```{r kurtos1, echo=FALSE, fig.width=8, fig.height=3, cache=TRUE}
+
+normaleC <- 1 
+picC <- 0.6
+plateC <- 3
+
+
+xx <- seq(-5,5, length.out = 100)
+normale <-  dnorm(xx,mean = 0, sd=normaleC)
+pic <-  dnorm(xx, mean = , sd=picC)
+plate <- dnorm(xx, mean=, sd=plateC)
+
+mydata <- data.frame(value=xx, dens=normale, type="Normale")
+piquee <- data.frame(value=xx, dens=pic, type="Leptokurtique")
+applatie <-  data.frame(value=xx, dens=plate, type="Platokurtique")
+
+
+mydata <- rbind(mydata, piquee)
+mydata <- rbind(mydata, applatie)
+
+ggplot(mydata, aes(x=value, y=dens))+geom_line(color="#44DD99", lwd=1.2)+
+  facet_grid(cols=vars(type), scales="free")+
+  ylab(label = "density")+
+  theme_light()
+```
+
+Courbe piquée: Peu de variation, distribution relativement homogène, beaucoup de valeurs égales ou proches de la moyenne.
+
+Courbe applatie: Variations importantes, distribution relativement hétérogène, beaucoup de valeurs s'éloignent de la moyenne.
+
+
+## Coefficient d'applatissement : kurtosis 
+
+Coefficient non normalisé)
+
+
+$\displaystyle K=\frac{\sum_{i=1}^{n}(x_i -\bar{x})^4}{n\sigma^4}$
+
+Si la distribution est normale , $K= 3$
+
+Si $K>3$, la distribution est **plus applatie** 
+
+Si $K<3$, la distribution est **moins applatie** 
+
+On normalise parfois en considérant $K'=K-3$ (excès d'applatissement)
+
+# Transformations des données 
+
+## Variables centrées-réduites 
+
+<span style="color:red">&#9888;</span> En principe, uniquement lorsque la distribution d'une variable est proche d'une gaussienne <span style="color:red">&#9888;</span> 
+
+
+Centrer : soustraire la moyenne
+
+Réduire : diviser par l'écart-type
+
+
+une variable **centrée réduite** est exprimée en «écarts-types à la moyenne»
+
+$\rightarrow$ permet de repérer les valeurs extrèmes (<2 ou >2)
+
+$\rightarrow$ utile pour comparer des individus selon un grand nombre de variables (tableaux de synthèse)
 
 ## Fat-tail distributions
 
@@ -668,7 +738,7 @@ Les distributions très asymétriques et très étendues sont délicates à rés
 
 e.g. Considérer la population moyenne des villes de France a-t'elle du sens ? 
 ```{r histoVillesPop, cache=TRUE, echo=FALSE, fig.width=8, fig.height=4}
-mydata <-  read.csv("Pop_villes_françaises.csv")
+mydata <-  read.csv("pop_communes.csv")
 plot_PopVilles <- ggplot(mydata)+
   geom_histogram(aes(x=Population.totale), bins=60 , color="#aaaaaa",fill="#44DD99" )+
   geom_vline(xintercept = mean(mydata$Population.totale), color = "red")+
@@ -684,7 +754,7 @@ plot_PopVilles
 Pour mieux voir la distribution et les écarts, on trace la **taille** des villes en fonction de leur **rang** 
 
 ```{r popVilles1 , cache = TRUE, fig.width=8, fig.height=4, echo=FALSE}
-mydata <-  read.csv("Pop_villes_françaises.csv")
+mydata <-  read.csv("pop_communes.csv")
 plot_PopVilles <- ggplot(mydata)+
   geom_point(aes(x=rank(-Population.totale), y=Population.totale), color="#44DD99")+
   xlab(label = "rang")+ylab("Population")+ggtitle("Distribution rang-taille des villes de France")+
@@ -702,7 +772,7 @@ Ici : le logarithme décimal
 ## Bonus : distribution rang-log(taille) 
 
 ```{r loglin1 , cache = TRUE, fig.width=8, fig.height=4, echo=FALSE}
-mydata <-  read.csv("Pop_villes_françaises.csv")
+mydata <-  read.csv("pop_communes.csv")
 plot_PopVilles <- ggplot(mydata)+
   geom_point(aes(x=rank(-Population.totale), y=Population.totale), color="#44DD99")+
   xlab(label = "rang")+ylab("Population")+ggtitle("Distribution rang-taille des villes de France")+
@@ -713,24 +783,6 @@ plot_PopVilles
 
 
 
-
-## Construction de la distribution théorique.
-
-On commence par sommer les effectifs selon les modalités (en ligne et en colonne)
-
-$$\begin{array}{c|c|c|c}
-   & blanc & noir & \texttt{total}\\ 
-   \hline
-carré &  22 &   12 & 34\\ 
-  \hline
-  rond &   10 &  30 &  40  \\ 
-    \hline
-  triangle &  26 &   5 &  31\\
-  \hline
-  \texttt{total} & 58 & 47 & 105
-  \end{array}$$
-
-On appelle les sommes en lignes et en colonnes **sommes marginales**, elles sont mises dans les "marges" du tableau.
 
 
 
