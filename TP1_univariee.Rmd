@@ -173,7 +173,7 @@ Il n'est donc pas nécessaire de refaire les opérations sur les géométries , 
 ```{r top6_2}
 plot(six_genres["libellefrancais"], 
      key.pos=1, cex=0.2, 
-     key.length = 0.7,
+     key.length = 0.9,
      main="Les six genres d'arbres les plus représentés à Paris")
 ```
 
