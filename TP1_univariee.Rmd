@@ -46,20 +46,6 @@ library(sf)
 ```
 
 
-
-Puis nous chargeons les données à l'aide de la fonction `geojson_sf`().  
-
------
-
-**N.B.** la fonction `geojson_sf` requiert le chemin d'accès au fichier, fourni sous sa forme relative ou absolue. Le repertoire de travail de R est défini par la commande `setwd("/chemin/vers/le/fichier")`. 
-Pour connaître le repertoire de travail courant, utiliser la fonction `getwd()` 
-
-
-**N.B.** le nombre de lignes et les valeurs de données qui apparaissent dans ce support peuvent varier, les données étant mises à jour régulièrement sur le site opendata.paris.fr 
-
------
-
-
 Nous installons et chargeons aussi les packages `dplyr` (manipulation aisée de données) et `cartography` (cartographie correcte des objets spatiaux).
 
 ```{r setuplib21, eval=FALSE,cache =TRUE}
@@ -75,6 +61,22 @@ library(cartography)
 
 
 ### Lecture de fichier
+
+
+
+Le fichier geoJSON est chargé à l'aide de la fonction `geojson_sf`().  
+
+-----
+
+**N.B.** la fonction `geojson_sf` requiert le chemin d'accès au fichier, fourni sous sa forme relative ou absolue. Le repertoire de travail de R est défini par la commande `setwd("/chemin/vers/le/fichier")`. 
+Pour connaître le repertoire de travail courant, utiliser la fonction `getwd()` 
+
+
+**N.B.** le nombre de lignes et les valeurs de données qui apparaissent dans ce support peuvent varier, les données étant mises à jour régulièrement sur le site opendata.paris.fr 
+
+-----
+
+
 
 ```{r dataLoading2, cache =TRUE}
 arbres <- geojson_sf("les-arbres.geojson")
