@@ -381,6 +381,8 @@ plot(quartiers["dens"], main="Densité d'arbres par quartier")
 
 Connaissant l'implantation des arbres et la formes des quartiers , que dire des densité des quartiers sud-ouest et sud-est ?
 
+Que nous dit la comparaison entre la carte choroplète de nombre et celle de densité ?
+
 Quel est le quartier le plus dense en arbres ?
 
 ```{r topdens,cache=TRUE}
