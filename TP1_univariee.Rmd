@@ -144,17 +144,18 @@ plot(arbres["arrondissement"], cex = 0.01, graticule=T)
 
 La sequence de commande suivantes transforme l'attributs `arrondissement` en **facteurs** et filtre les données de façon à ne conserver que les arrondissements de Paris intra muros.
 
-Nous utilisons les fonctiosn: 
+Nous utilisons les fonctions: 
 
 - `as.factor()` pour transformer une colonne en *facteurs* , i.e. des variables qui ne peuvent prendre qu'un certain nombre de modalités
-- `levles()` qui donnent les modalités que peut prendre une variable factorielle
+- `levels()` qui donnent les modalités que peut prendre une variable factorielle
 - `filter()` ,fonction du pakcage `dplyr` qui ne conservent que les éléments d'un tableau correspondant à un certain prédicat booléen passé en argument 
+- l'opérateur ensembliste `%in%` (appartenance) et l'opérateur booléen `!`  (NOT)
 - `as.data.frame()` qui convertit un objet en dataframe (lorsque c'est possible)
 - `droplevels` , qui supprime les modalités inutilisées d'un facteur
 
 ```{r levels,  cache =TRUE}
 arbres$arrondissement <- as.factor(arbres$arrondissement)
-levels(arbres$arrondissement) #pour connaître les modalités de la variable
+levels(arbres$arrondissement) #  modalités de la variable
 arbres_intramuros <-  filter(arbres, !(arrondissement %in% c("BOIS DE BOULOGNE",  "BOIS DE VINCENNES", "HAUTS-DE-SEINE", "SEINE-SAINT-DENIS", "VAL-DE-MARNE")))
 # on retire les valeurs modales inusitées de la variable 
 arbres_intramuros$arrondissement <- as.character(arbres_intramuros$arrondissement)
@@ -163,7 +164,7 @@ levels(arbres_intramuros$arrondissement)
 ```
 
 
-On peut maintenant tracer les positions des  arbres de Paris intra-muros, après avoir vérifié le CRS de cette couche par la fonction `st_crs()`
+On peut maintenant tracer les positions des  arbres de Paris intra-muros, après avoir vérifié le CRS de cette couche par la fonction `st_crs()` (pour superposer plus tard les deux couches si celles-ci )
 
 ```{r arrond, cache=TRUE}
 st_crs(arbres_intramuros) 

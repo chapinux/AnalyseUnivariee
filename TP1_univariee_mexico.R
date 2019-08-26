@@ -120,34 +120,73 @@ library(sf)
 df2 <-  fread("/media/paulchapron/Data/Mexique_IGAST/mexico2015_NA_insteadof_NIU.csv")
 
 
-
-
-
-
-
 # données contours 
 mexicoshp <-  st_read("/media/paulchapron/Data/Mexique_IGAST/geo2_mx1960_2015/geo2_mx1960_2015.shp")
+mexicoshp$CNTRY_CODE <- NULL
+mexicoshp$CNTRY_NAME <- NULL
 plot(mexicoshp["GEOLEVEL2"], lwd=0.1)
+names(mexicoshp)
 
-names(df2)
+
+
+## couverture des données
+
+varz <- names(df2)[5:25]
+dfEffectif_by_GEO2 <-  df2 %>% 
+  group_by(GEO2_MX) %>% 
+ summarise(effectif=n()) 
+
+dfMissing_by_GEO2 <- 
+  df2 %>%
+  group_by(GEO2_MX)%>% 
+  summarise_at(varz,funs(sum(is.na(.)))) 
+
+dfMissing <-  merge(dfEffectif_by_GEO2, dfMissing)
+
+rm(dfEffectif_by_GEO2)
+
+dfMissing %>% 
+  mutate_at(varz, funs(./effectif))
+
+mexicoMissingValues <-  merge(mexicoshp, dfMissing,  by.x="GEOLEVEL2" , by.y="GEO2_MX")
+
+
+
+  
+
+
+setwd("/media/paulchapron/Data/Mexique_IGAST/maps/")
+mapMissing <- function(currentVar){
+  mapName <-  paste0("MissingValues_", currentVar)
+png(filename = paste0(mapName, ".png"), width=1400, height = 800)
+  plot(mexicoMissingValues[currentVar], main=paste0("Nombre de données manquantes pour la variable ", currentVar))
+  dev.off()
+}
+
+
+
+
+sapply(varz, mapMissing)
+
 
 
 #df age trié par id de geo2
 dfAGE_byGEO2 <-  df2 %>% 
   group_by(GEO2_MX) %>% 
-  summarise(meanAGE = mean(AGE,na.rm = T), wtMean = weighted.mean(AGE,HHWT, na.rm = T),sdAGE=sd(AGE,na.rm = T), medAGE=median(AGE,na.rm = T)) 
+  summarise(meanAGE = mean(AGE,na.rm = T), weightedMeanAGE = weighted.mean(AGE,HHWT, na.rm = T),sdAGE=sd(AGE,na.rm = T), medianAGE=median(AGE,na.rm = T)) 
 
 mexicoshpAGE <-  merge(mexicoshp, dfAGE_byGEO2, by.x="GEOLEVEL2" , by.y="GEO2_MX") 
 names(mexicoshpAGE)
 
 
-
 #carto âge moyen
-plot(mexicoshpAGE["meanAGE"], main = "Age moyen par région", lwd=0.2)
+plot(mexicoshpAGE["weightedMeanAGE"], main = "Age moyen par région", lwd=0.2)
 
 
 
-#df age trié par id de geo2
+df2$YRSCHOOL
+
+#df années d'études trié par id de geo2
 dfYRS_byGEO2 <-  df2 %>% 
     filter(YRSCHOOL < 90) %>% 
     group_by(GEO2_MX) %>% 
@@ -155,16 +194,14 @@ dfYRS_byGEO2 <-  df2 %>%
 
 mexicoshpYRS <-  merge(mexicoshp, dfYRS_byGEO2, by.x="GEOLEVEL2" , by.y="GEO2_MX") 
 
-names(mexicoshpYRS)
-
 #carto âge moyen
-plot(mexicoshpYRS["wtMean"], main = "Age moyen par région", lwd=0.2)
+plot(mexicoshpYRS["wtMean"], main = "nombre d'années d'étude moyen par région", lwd=0.2)
 
 
 
 
 
-names(df2)
+
 
 
 
