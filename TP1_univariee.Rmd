@@ -188,7 +188,7 @@ plot(arbres_intramuros["arrondissement"], add=TRUE, alpha=0.5, cex=0.1  )
 ```
 
 
-## "Cartographie"" simple
+## "Cartographie" simple
 
 Pour tracer un objet spatial , il suffit d'appliquer la fonction `plot()`  sur cet objet.
 Cette fonction peut également colorer la géométrie de l'objet en fonction d'une variable. 
