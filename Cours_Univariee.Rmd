@@ -19,7 +19,7 @@ library(dplyr)
 
 ## Avertissement  {.flexbox .vcenter}
 
- <span style="color:red">&#9888;</span>  Pour voir les formules, une connexion internet est requise.  <span style="color:red">&#9888;</span> 
+ <span style="color:red">&#9888;</span>  Pour voir les formules mathématiques des diapos, une connexion internet est requise.  <span style="color:red">&#9888;</span> 
 
 
 ## Reférences
@@ -30,6 +30,49 @@ library(dplyr)
 - Nombreuses ressources en ligne, e.g. : 
     - http://www.foad-mooc.auf.org/IMG/pdf/424B_-Application_des_methodes_statistiques_d_analyse.pdf
     - http://www.itse.be/statistique2010/co/Module_statistique_FSP.html
+
+
+## Analyse spatiale : définition 
+
+L’analyse spatiale étudie la **répartition** et l’**organisation** d’ensembles d’objets qui sont **localisés**  
+
+L’objectif est de : 
+
+<div style="text-align:center;">
+*«déceler en quoi la localisation apporte un élément utile à la connaissances des objets étudiés et peut en expliquer les caractéristiques»* </div>
+<div style="text-align:right;">
+[Pumain, Saint-Julien 97] </div>
+
+
+## Spécificité de l'analyse **spatiale**
+<span style="text-decoration: underline;
+  text-decoration-color: #96C31E;">Analyse statistique :</span> 
+
+Des méthodes résumant (statistique descriptive) et généralisant des observations
+
+* Les unités d’analyse sont des éléments indépendants en principe 
+* On ne s’intéresse pas à leur localisation
+* On ne tient pas compte de leur interaction
+
+<span style="text-decoration: underline;
+  text-decoration-color: #96C31E;">Analyse spatiale statistique : </span>
+
+  * Les unités d’analyse sont localisables 
+  * On s’intéresse à leur propriétés y compris la localisation
+  * On fait l’hypothèse que leur localisation peut influencer les valeurs observées
+
+
+## Deux approches 
+Analyse géométrique : 
+
+approche **géométrique** pour mieux décrire les données: analyse de forme, de réseaux, de proximité, méthodes de création de nouvelles entités à partir de la géométrie des objets
+
+<div style="border: solid #96C31E 4px; border-radius:12px; ">
+<div style="margin: 10px;">Analyse de données  : 
+
+approche **statistique** permettant de faire émerger des relations (des groupes, des lois)  pour aider  l’étude de certains phénomènes</div>
+</div>
+
 
 ## Deux familles statistiques
 
@@ -44,10 +87,10 @@ library(dplyr)
 ### Statistiques descriptives 
   Pour décrire, résumer, synthétiser  les propriétés d'une **population** à partir de ses **individus** et des **variables** qui les décrivent.
   
-  - Graphiques
-  - Mesures (fréquences, distributions, moments) sur des variables
+  - *Graphiques*
+  - *Mesures* (fréquences, distributions, moments) sur des variables
   - *Liaisons* statistiques entre variables : **corrélation**, **covariance**
-  - classification , ACP,...
+  - *Structure* interne des données : classification , ACP,...
 
 ## Au programme dans ce module {.flexbox .vcenter}
 
@@ -57,6 +100,8 @@ Nous ferons majoritairement de la statistique **descriptive**
 
 
 # Vocabulaire & Contexte
+
+## Vocabulaire 
 
  
 ### Population
@@ -172,14 +217,26 @@ Sur les mêmes chiffres du bilan d’une entreprise en 2013 et 2014
 
 ### Taille et représentativité de  l'échantillon
 
+<div style="text-align:center">
+<img src="./daltons.jpeg" width=600px>
+</div>
+
+
+## Les précautions à prendre 
+
 ### Présences de groupes (paradoxe de Simpsons)
 
 
-<<<<<<< HEAD
-## Analyse univariée 
-=======
+
+<div style="text-align:center">
+<img src="./Simpsons_paradox_-_animation.gif">
+</div>
+
+<small>
+source: wikipedia
+</small>
+
 ## Analyse univariée : plan du cours
->>>>>>> c2c369ccacc7516c1aebecf083e28b0e7a64f6ff
 
 Objectif : **Décrire la répartition des valeurs** d'une variable
 
@@ -261,7 +318,9 @@ satisfaction $\in$ {Très satisfait, Satisfait, Ni satisfait ni insatisfait, Peu
 ## l'Échelle d’Analyse
 
 
-Spécificité de la statistique spatiale : à quelle échelle observe-t'on une donnée ?
+Spécificité de la statistique spatiale : à quelle échelle observer ? 
+
+Quel découpage, quelles unités spatiales ?
 
 «Problème insoluble» : le MAUP (Modifiable Areal Unit Problem)
 
@@ -292,11 +351,28 @@ Inférer des caractéristiques concernant les unités agrégées d’après les 
 
 ## le MAUP (Modifibale Aereal Unit Problème)
 
-Problème d'agrégation spatiale : les résultas d'une analyse statistique spatiale dépendent du choix d'agragation 
+Problème d'agrégation spatiale : les résultats d'une analyse statistique spatiale dépendent du choix d'agragation 
 
 biais «sytématique et insoluble» 
 
-TODO trouver un exemple carto genre vote 
+Exemples tirés du rapport ESPON : 
+
+[https://www.espon.eu/sites/default/files/attachments/espon343_maup_final_version2_nov_2006.pdf](https://www.espon.eu/sites/default/files/attachments/espon343_maup_final_version2_nov_2006.pdf)
+
+
+## MAUP exemple 1
+
+
+<div style="text-align:center">
+<img src="./Maup1.png" width=100% >
+</div>
+
+## MAUP exemple 2
+
+<div style="text-align:center">
+<img src="./Maup2.png" width=100%>
+</div>
+
 
 # Statistique descriptive univariée : la tendance
 
@@ -372,6 +448,7 @@ Dans ce cas le mode est la moyenne des valeurs min et max des bornes de la class
 
 ### Avantages 
 Peu sensible aux valeurs extrêmes (moins sensible que la moyenne)
+
 Signification concrète : la situation la plus fréquente
 
 ### Inconvénients 
@@ -379,7 +456,7 @@ Ne dépends pas de toutes les observations : la modification d'une seule valeur 
 
 ## la Médiane 
 
-**Médiane** : valeur qui partage une série de valeurs en deux sous-ensembles d’égal effectif
+**Médiane** : valeur qui partage une série de valeurs en d**eux sous-ensembles d’égal effectif**
 
 Comme en géométrie, la médiane est la valeur de la variable qui est la plus proche de toutes les autres.
 
@@ -454,6 +531,30 @@ plot1
 ```
 
 
+## Histogramme et distribution en R
+
+
+la fonction `hist` affiche un histogramme d'un vecteur **numerique**:
+
+```{r histoR}
+x <-  rnorm(2500) #init
+hist(x)
+```
+
+## Histogramme et distribution en R
+
+un histogramme n'a pas de sens  pour une variable **qualitative**. 
+
+On peut utiliser `barplot`,<span style="color:red; font-size:1;">&#9888;</span> mais ce n'est plus une distribution ! 
+
+```{r histoR2,fig.width=8 }
+x <-  sample(month.name, 2500, replace=T)
+tx <- table(x)
+barplot(tx , las=2)
+```
+
+
+
 # Statistique descriptive univariée : la dispersion
 
 ## La dispersion statistique 
@@ -511,7 +612,7 @@ plot1 <- ggplot(X)+
         geom_line(aes(x = value),stat="density", color="#44DD99", lwd=1.2)+
         geom_vline(xintercept = c(-sd(X$value), sd(X$value)), color="red")+
         geom_vline(xintercept = c(-2*sd(X$value), 2*sd(X$value)), color="blue")+
-        annotate("text", x=c(3.5,3.5), y=c(0.2,0.15), colour=c("red","blue"),label=c("  68,27 % ","95,45 % "))+
+        annotate("text", x=c(1.5,2.5), y=c(0.3,0.12), colour=c("red","blue"),label=c("  68,27%\n de l'effectif ","95,45%\n de l'effectif "))+
         theme_light()
 plot1
 ```
@@ -599,6 +700,37 @@ Pour quelle commune les aides sont les plus homogènes?
 
 On peut aussi comparer des distribution de valeurs exprimées dans des unités différentes !
 
+## (Mauvaise) Comparaison visuelle de deux distributions
+
+<span style="font-size:60%; margin-top:-50px">Pour échantilloner dans une loi normale : fonction `rnorm`</span>
+
+```{r compDistNorm1, fig.height=2.8}
+A <-  rnorm(n = 10000, mean = 390, sd = 30)
+B <-  rnorm(n = 10000, mean = 152, sd = 8)
+par(mfrow=c(1, 2))
+hist(A, probability = T)
+lines(density(A), col="red")
+hist(B, probability = T)
+lines(density(B), col="red")
+```
+Qu'est ce qui ne va pas ?
+
+
+##  Comparaison visuelle de dispersion de deux distributions
+
+
+Il faut une échelle commune !
+
+```{r compDistNorm2}
+A <-  rnorm(n = 10000, mean = 390, sd = 30)
+B <-  rnorm(n = 10000, mean = 152, sd = 8)
+par(mfrow=c(1, 2))
+hist(A, probability = T, xlim = c(50,600), ylim = c(0,0.05))
+lines(density(A), col="red")
+hist(B, probability = T,xlim = c(50,600), ylim = c(0,0.05))
+lines(density(B), col="red")
+```
+
 
 
 # Statistique descriptive univariée : la forme
@@ -665,7 +797,8 @@ $\displaystyle skewness'=\mathbb{E}\bigg[\bigg(\frac{X-\mu}{\sigma}\bigg)^3\bigg
 
 
 
-# Transormations des données 
+
+
 ```{r kurtos1, echo=FALSE, fig.width=8, fig.height=3, cache=TRUE}
 
 normaleC <- 1 
@@ -733,11 +866,12 @@ $\rightarrow$ utile pour comparer des individus selon un grand nombre de variabl
 ## Fat-tail distributions
 
 
-Les distributions très asymétriques et très étendues sont délicates à résumer : les indicateurs traditionnels sont plus efficaces lorsque la variabilité des valeurs est moindre, et leur distribution plus symétrique.
+Les distributions très asymétriques et très étendues sont délicates à résumer.
 
+Les indicateurs traditionnels sont plus efficaces lorsque la variabilité des valeurs est moindre, et leur distribution plus symétrique.
 
 e.g. Considérer la population moyenne des villes de France a-t'elle du sens ? 
-```{r histoVillesPop, cache=TRUE, echo=FALSE, fig.width=8, fig.height=4}
+```{r histoVillesPop, cache=TRUE, echo=FALSE, fig.width=8, fig.height=2.5}
 mydata <-  read.csv("pop_communes.csv")
 plot_PopVilles <- ggplot(mydata)+
   geom_histogram(aes(x=Population.totale), bins=60 , color="#aaaaaa",fill="#44DD99" )+
@@ -764,7 +898,12 @@ plot_PopVilles
 
 ## Transformation logarithmique
 
-Appliquer une transformation **monotone**, **bijective** et **inversible** qui "applatisse" la distribution , de façon à réduire les écarts entre les valeurs, et à resserrer  l'essentiel des valeurs , pour mesurer de façon plus robuste leur tendance, dispersion et forme
+Appliquer une transformation **monotone**, **bijective** et **inversible** qui "applatisse" la distribution.
+
+  * réduit les écarts entre les valeurs
+  * resserre  l'essentiel des valeurs 
+
+$\implies$ mesure de façon plus robuste  tendance, dispersion et forme
 
 Ici : le logarithme décimal
 

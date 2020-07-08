@@ -17,8 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 **Objectif principal** : Analyser et cartographier la distribution statistique et spatiale des arbres dans Paris 
 
-**Objectif secondaire** :  Préparer les données pour la classification 
-
+**Objectif secondaire** :  revoir les concepts d'analyse univariée, et réaliser des cartes avec R.
 ## Les données 
 
 
@@ -58,7 +57,7 @@ les variables du jeu de données  sont :
 Les contours des quartiers proviennent également du site opendata.paris.fr [(url)](https://opendata.paris.fr/explore/dataset/quartier_paris/information/)
 Chaque arrondissement est constitué de 4 quartiers.
 
-Les variabels disponibles sont : 
+Les variables disponibles sont : 
 
 * _n_sq_qu_ : identifiant séquentiel du quartier, constitué de la concaténation de 75000 et du code de quartier 
 * _c_qu_ : code du quartier , valeur entière $\in [1;80]$
@@ -75,7 +74,8 @@ Les variabels disponibles sont :
 
 ## Outils 
 
-Les manipulations peuvent être effectuées avec PostGIS, QGIS et MS Excel et R .
+Les manipulations peuvent être effectuées avec PostGIS, QGIS et  R .
+Il est théoriquement possible de réaliser les traitements statistiques avec MS Excel, mais il est fortement recommandé d'utiliser R, langage dans lequel sera donné le corrigé.
 
 
 # Distribution statistiques des arbres
