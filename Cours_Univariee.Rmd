@@ -1,28 +1,50 @@
 ---
 title: "Analyse Univariée (avec R)"
-author: "PC - M2 IGAST"
-date: "2019-2020"
-output: ioslides_presentation
+author: "M2 IGAST"
+date: "2020-2021"
+output: 
+  revealjs::revealjs_presentation:
+    theme: sky 
+    transition: fade
+    center: true
+    self_contained: false
+    reveal_options:
+      slideNumber: true
+      previewLinks: true
+    
 css : style.css
 ---
 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,fig.width =6,fig.align="center", fig.height = 3)
+library(revealjs)
 library(knitr)
 library(xtable)
 library(ggplot2)
 library(dplyr)
 ```
 
-# Introduction générale 
 
-## Avertissement  {.flexbox .vcenter}
 
- <span style="color:red">&#9888;</span>  Pour voir les formules mathématiques des diapos, une connexion internet est requise.  <span style="color:red">&#9888;</span> 
+
+## Introduction générale 
+
+<br><br>
+<br><br>
+<br><br>
+<small>
+<div style="text-align:center;">
+<span style="color:red">&#9888;</span>Pour voir les formules mathématiques, une connexion internet est requise.<span style="color:red">&#9888;</span>
+</div>
+</small>
 
 
 ## Reférences
+
+<br>
+
+
 
 - Cours M2 IGAST 2018 d'Ana-Maria Olteanu-Raimond 
 - R et espace https://framabook.org/r-et-espace/
@@ -34,12 +56,15 @@ library(dplyr)
 
 ## Analyse spatiale : définition 
 
-L’analyse spatiale étudie la **répartition** et l’**organisation** d’ensembles d’objets qui sont **localisés**  
+<br>
+<br>
 
+L’analyse spatiale étudie la **répartition** et l’**organisation** d’ensembles d’objets qui sont **localisés**  
+<br>
 L’objectif est de : 
 
-<div style="text-align:center;">
-*«déceler en quoi la localisation apporte un élément utile à la connaissances des objets étudiés et peut en expliquer les caractéristiques»* </div>
+
+*«déceler en quoi la localisation apporte un élément utile à la connaissances des objets étudiés et peut en expliquer les caractéristiques»* 
 <div style="text-align:right;">
 [Pumain, Saint-Julien 97] </div>
 
@@ -48,14 +73,14 @@ L’objectif est de :
 <span style="text-decoration: underline;
   text-decoration-color: #96C31E;">Analyse statistique :</span> 
 
-Des méthodes résumant (statistique descriptive) et généralisant des observations
+Méthodes *résumant* et *généralisant* des observations
 
 * Les unités d’analyse sont des éléments indépendants en principe 
 * On ne s’intéresse pas à leur localisation
 * On ne tient pas compte de leur interaction
 
 <span style="text-decoration: underline;
-  text-decoration-color: #96C31E;">Analyse spatiale statistique : </span>
+  text-decoration-color: #96C31E;">Analyse **spatiale** statistique : </span>
 
   * Les unités d’analyse sont localisables 
   * On s’intéresse à leur propriétés y compris la localisation
@@ -68,88 +93,121 @@ Analyse géométrique :
 approche **géométrique** pour mieux décrire les données: analyse de forme, de réseaux, de proximité, méthodes de création de nouvelles entités à partir de la géométrie des objets
 
 <div style="border: solid #96C31E 4px; border-radius:12px; ">
-<div style="margin: 10px;">Analyse de données  : 
+<div style="margin: 10px; text-align:left;">Analyse de données  : 
 
 approche **statistique** permettant de faire émerger des relations (des groupes, des lois)  pour aider  l’étude de certains phénomènes</div>
 </div>
 
 
-## Deux familles statistiques
+## Deux familles  
+<br><br><br>
+statistiques **inférentielles** et statistiques **descriptives** 
 
-### Statistiques inférentielles
+## Statistiques inférentielles
+
+<br><br>
+
   A partir d'un échantillon , que peut-on attendre (=**inférer**) de la population ?
-  
+
+<br>
+
   - Modèles, estimateurs, ... : **régression**, **estimation**, **extrapolation**
   - e.g. sondages, rencensement 
+  
+## Statistiques inférentielles : exemple
+  
+TODO regression linéaire   
+  
+  
 
-## Deux familles statistiques
+## Statistiques descriptives 
+Décrire, résumer, synthétiser  les propriétés d'une **population** à partir des **variables** qui décrivent ses individus.
+<br><br>
   
-### Statistiques descriptives 
-  Pour décrire, résumer, synthétiser  les propriétés d'une **population** à partir de ses **individus** et des **variables** qui les décrivent.
-  
-  - *Graphiques*
+  - *Graphiques* : nuages de points , histogramme, ...
   - *Mesures* (fréquences, distributions, moments) sur des variables
   - *Liaisons* statistiques entre variables : **corrélation**, **covariance**
   - *Structure* interne des données : classification , ACP,...
 
-## Au programme dans ce module {.flexbox .vcenter}
+## Dans ce module 
+<br>
+<br>
+
+
 
 Nous ferons majoritairement de la statistique **descriptive**
 
 (même si, pour bien décrire, il faut parfois inférer)
 
 
-# Vocabulaire & Contexte
+## Vocabulaire & Contexte
 
-## Vocabulaire 
 
  
-### Population
+## Population
+<br><br>
+
  **Ensemble** d'individus  
  
  "données", "corpus", "échantillon", "data"
  
-### Individus
+## Individus
+<br><br>
+
  **Unité** statistique **élémentaire**: personnes, logements, ...
  
  
   $\rightarrow$ "les lignes du tableau"
 
-## Vocabulaire 
 
-### Variables 
+## Variables 
+
+<br><br>
+
  **Caractéristiques, propriétés** d’un individu, mesurées par des enquêtes, des observations...
 
-"les colonnes du tableau"  
+$\rightarrow$ "les colonnes du tableau"  
 
-- **Qualitatives** : facteurs e.g. Sexe, CSP, type , notion de **modalité**
+
+## Types de variables 
+
+
+- **Qualitatives** : facteurs e.g. genre, CSP, type de pokemon,... notion de **modalité**
  
-- **Quantitatives** : nombres e.g. Taille, revenu, surface
+- **Quantitatives** : nombres e.g. taille, masse, revenu, surface, points de vie,...  parfois exprimées avec des **unités** : m, kg, s
 
+<br>
 
-
-<span style="color:red">&#9888;</span> **Valeurs** et **Nature** de données sont deux choses distinctes. 
-<center> 3≠trois≠III </center>
-
-
-
- <span style="color:red">&#9888;</span> Valeurs manquantes  
- <center> NA , NaN, Null </center>
-
-
+<span style="color:red">&#9888;</span> **Valeurs** et **Nature** de données sont deux choses distinctes : 3≠trois≠III 
+<br>
+<br>
+<span style="color:red">&#9888;</span> Valeurs manquantes  :  NA , NaN, Null 
 
 
 
 ## Analyse univariée {.flexbox .vcenter}
 
-**Décrire**  et **mesurer** la **répartition** des valeurs que peut prendre une variable.
+**Décrire**  et **mesurer** la **répartition** des valeurs que peut prendre une variable : sa  **distributions** ($\approx$ "histogramme en continu")
 
-On parle de **distributions** ($\approx$ "histogramme en continu")
-
-Parfois certaines de ces répartitions s'approchent de  distributions bien connues (des **modèles**) : on parle de **lois**
+Parfois certaines distributions ressemblent à des distributions bien connues : on parle de **lois**
 
 
-e.g. loi normale/gaussienne , loi de Poisson
+e.g. loi normale/gaussienne, loi de Poisson, géométrique, exponentielle, ...
+
+<div class="col2">
+```{r , expledistrib, cache=TRUE, fig.height=2, echo=FALSE}
+xx <- data.frame(value=rnorm(8000))
+plot1 <- ggplot(xx)+
+        geom_density(aes(x = value), color="#aaaaaa", fill="#44DD99" )+
+        theme_light()
+plot1
+yy <- data.frame(value=rexp(8000,rate = 4))
+plot2 <- ggplot(yy)+
+        geom_density(aes(x = value), color="#aaaaaa", fill="#44DD99" )+
+        theme_light()
+plot2
+```
+</div>
 
 ## Histogramme d'une variable suivant une loi normale $\mathscr{N}(0,1)$ 
 
@@ -188,7 +246,7 @@ Dette 2013 = 100 milliards €
 
 Article de 2015 n°1 : « Diminution du déficit: La dette de la France, qui avait augmenté de 15 % l’an passé, n’a augmenté cette année que de 14%. Le gouvernement se félicite de sa gestion exemplaire.»  
 
-Article de 2015 n°2 : « Augmentation du déficit: 15 milliard l’an passé, il dépasserait cette année 16 milliard €»
+Article de 2015 n°2 : « Augmentation du déficit: 15 milliard l’an passé, il dépasserait cette année 16 milliard d'euros»
 
 Qui dit la vérité? 
 
@@ -213,18 +271,15 @@ Sur les mêmes chiffres du bilan d’une entreprise en 2013 et 2014
 
 
 
-## Les précautions à prendre 
 
-### Taille et représentativité de  l'échantillon
+## Précautions : Taille et représentativité de  l'échantillon
 
-<div style="text-align:center">
+<center>
 <img src="./daltons.jpeg" width=600px>
-</div>
+</center>
 
 
-## Les précautions à prendre 
-
-### Présences de groupes (paradoxe de Simpsons)
+## Précautions : présence de groupes (paradoxe de Simpsons)
 
 
 
@@ -258,11 +313,11 @@ symétrie (Skewness) et aplatissement (Kurtosis)
 
 ## Les variables (1)
 
-### Données "non spatiales"" 
+## Données "non spatiales" 
 
-Les variables sont des valeurs attributaires d'individus, leurs localisation n'est pas prise en compte
+Les variables sont des valeurs attributaires d'**individus**, leurs localisation n'est pas prise en compte
 
-### Données spatiales
+## Données spatiales
   
   Individus restreints spatialement (**selection spatiale**), ou variables de **localisation** géographique (e.g. Lieu de résidence, coordonnées) renseignées pour les individus 
   
@@ -275,11 +330,11 @@ Les variables sont des valeurs attributaires d'individus, leurs localisation n'e
 
 Exemple ?
 
-### variables quantitatives **continues** : $var \in \mathbb{R}$
+#### variables quantitatives **continues** : $var \in \mathbb{R}$
 
 Valeurs réelles,  toutes les valeurs de l'intervalle de mesures peuvent exister 
 
-### variables quantitatives **discrètes**  : $var \in \mathbb{N}$ 
+#### variables quantitatives **discrètes**  : $var \in \mathbb{N}$ 
 
 Valeurs entières, pour des attributs **dénombrables** (comptage) , 
 
@@ -300,13 +355,13 @@ $\rightarrow$ notion de **modalités**
 ## Variables **qualitatives**
 
 
-### variables qualitatives **nominales**
+#### variables qualitatives **nominales**
 
 Les modalités ne sont **pas ordonnées** explicitement 
 
 e.g. situation matrimoniale $\in$ {marié·e, célibataire, veuf·ve}
 
-### variables qualitatives **ordinales**
+#### variables qualitatives **ordinales**
 
 Les modalités sont **ordonnées** selon un ordre **total** et non-ambigu. 
 
@@ -322,15 +377,15 @@ Spécificité de la statistique spatiale : à quelle échelle observer ?
 
 Quel découpage, quelles unités spatiales ?
 
-«Problème insoluble» : le MAUP (Modifiable Areal Unit Problem)
+«Problème insoluble» : le **MAUP** (Modifiable Areal Unit Problem)
 
-###  Unités spatiales agrégées 
+##  Unités spatiales agrégées 
 
 agrégation d’unités spatiales : comtés, départements, régions, pays
 
 e.g. Comprendre comment  le taux de chômage d’un pays est distribué entre les régions pour guider les politiques économiques
 
-### Groupe d’unités spatiales: 
+## Groupe d’unités spatiales: 
 
 identification des unités spatiales ayant des caractéristiques semblables
 
@@ -378,12 +433,12 @@ Exemples tirés du rapport ESPON :
 
 ## Moyenne
 
-### Moyenne
+## Moyenne
 
 $\displaystyle \bar{x} = \frac{1}{n}\sum_{i=0}^{n} x_i$
 
 
-### Moyenne pondérée
+## Moyenne pondérée
 
 Lors que les valeurs n'ont pas le même poids (e.g. poids = effectif de la valeur)
 
@@ -392,10 +447,10 @@ $\displaystyle \bar{x} = \frac{1}{\sum_{i=0}^n pi}\sum_{i=0}^{n} p_i x_i$
 
 ## Avantages et inconvénients de la moyenne
 
-### Avantage
+## Avantage
   Chaque valeur compte
 
-### Inconvénients 
+## Inconvénients 
 
 * sensibilité aux valeurs extrèmes 
 * pas de signification sur les valeurs discrètes (e.g. 2.5 enfants par femme)
@@ -411,14 +466,14 @@ $\rightarrow$ étudier la distribution des valeurs (e.g. cas bimodal) et opérer
 ## Autres Moyennes
 
 
-### Moyenne geométrique:
+## Moyenne geométrique:
 <br>
 
 $\displaystyle \bar{x} = \sqrt[n]{\prod _{i=0}^{n} x_i}$  
 
 Moins sensible à la présence de valeurs extrèmes
 
-### Moyenne quadratique (RMS) 
+## Moyenne quadratique (RMS) 
 <br>
 
 $\displaystyle \bar{x} = \sqrt{\frac{1}{n}\sum _{i=0}^{n} x_i^2}$
@@ -446,12 +501,12 @@ Dans ce cas le mode est la moyenne des valeurs min et max des bornes de la class
 
 ## Avantages et inconvénients du mode
 
-### Avantages 
+## Avantages 
 Peu sensible aux valeurs extrêmes (moins sensible que la moyenne)
 
 Signification concrète : la situation la plus fréquente
 
-### Inconvénients 
+## Inconvénients 
 Ne dépends pas de toutes les observations : la modification d'une seule valeur n’entraine pas une modification du mode
 
 ## la Médiane 
@@ -460,7 +515,7 @@ Ne dépends pas de toutes les observations : la modification d'une seule valeur 
 
 Comme en géométrie, la médiane est la valeur de la variable qui est la plus proche de toutes les autres.
 
-### Etapes de calcul 
+## Etapes de calcul 
 Ordonner les valeurs selon un ordre croissant
 
 Calculer le rang $i=\frac{n+1}{2}$
@@ -472,14 +527,14 @@ si $n$ pair, la valeur médiane est entre deux valeurs et est égale à la moyen
 
 ## Avantages et inconvénients de la médiane 
 
-### Avantages 
+## Avantages 
 Plus pertinente que la moyenne
 
 Peu sensible aux valeurs extrêmes 
 
 A une signification concrète : divise en deux la distribution : un individu sur deux a une valeur inférieure ou supérieure à celle-ci
 
-### Inconvénient 
+## Inconvénient 
 Ne dépend pas de toutes les observations : la modification d'une seule valeur n’entraine pas une modification de la médiane 
 
 
@@ -659,13 +714,13 @@ plot1
 
 ## Avantages et inconvénient des quantiles
 
-### Avantages
+## Avantages
 
 Peu sensibles aux distributions aplaties et aux valeurs extrèmes
 
 L'écart inter-quantile est plus robuste que l'écart-type
 
-### Inconvénients
+## Inconvénients
 
 Parfois délicat pour les variables quantitatives discrètes
 

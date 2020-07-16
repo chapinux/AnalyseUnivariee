@@ -14,10 +14,11 @@ h2 {
 }
 
 h3 { 
-  font-size: 26px;
+  font-size: 20px;
   color: #acd341; /* vert IGN*/
   border-bottom: 1px dashed #acd341;
   margin-top: -20px;
+  text-align: left;
 }
 
 
@@ -31,10 +32,32 @@ h3 {
   font-size: 65px;
   line-height: 1.4;
   letter-spacing: -3px;
-  color:#96C31E; ;
+  color:#96C31E; 
 }
 
 
 .reveal {
-	background : #999999;
+	background : #FFFFFF;
 }
+
+.reveal p {
+  color:#444444; 
+  text-align: left;
+}
+
+
+.reveal strong {
+  color: #acd341;
+}
+
+.col2 {
+    columns: 2 200px;         /* number of columns and width in pixels*/
+    -webkit-columns: 2 200px; /* chrome, safari */
+    -moz-columns: 2 200px; /* firefox */
+    display: block;
+    border: 1px solid #333;    
+}
+
+ .reveal section img {
+  border: 1px solid #333;    
+  }
