@@ -19,6 +19,8 @@ css : style.css
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,fig.width =6,fig.align="center", fig.height = 3)
 library(revealjs)
+library(tidyverse)
+library(palmerpenguins)
 library(knitr)
 library(xtable)
 library(ggplot2)
@@ -63,21 +65,20 @@ L’analyse spatiale étudie la **répartition** et l’**organisation** d’ens
 <br>
 L’objectif est de : 
 
-
+<p>
 *«déceler en quoi la localisation apporte un élément utile à la connaissances des objets étudiés et peut en expliquer les caractéristiques»* 
+</p>
 <div style="text-align:right;">
 [Pumain, Saint-Julien 97] </div>
 
 
 ## Spécificité de l'analyse **spatiale**
-<span style="text-decoration: underline;
-  text-decoration-color: #96C31E;">Analyse statistique :</span> 
+<span style="text-decoration: underline;text-decoration-color: #96C31E;">Analyse statistique :</span> 
 
 Méthodes *résumant* et *généralisant* des observations
 
 * Les unités d’analyse sont des éléments indépendants en principe 
-* On ne s’intéresse pas à leur localisation
-* On ne tient pas compte de leur interaction
+* On ne s’intéresse pas à leur localisation ni à leur interactions (spatiales)
 
 <span style="text-decoration: underline;
   text-decoration-color: #96C31E;">Analyse **spatiale** statistique : </span>
@@ -116,9 +117,32 @@ statistiques **inférentielles** et statistiques **descriptives**
   
 ## Statistiques inférentielles : exemple
   
-TODO regression linéaire   
+```{r reglinexple, echo=FALSE, cache=TRUE, warning=FALSE}
+library(tidyverse)
+ggplot(data = penguins, 
+                       aes(x = flipper_length_mm,
+                           y = body_mass_g)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  #theme_minimal() +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(title = "Penguin size, Palmer Station LTER",
+       subtitle = "Flipper length and body mass for Adelie, Chinstrap and Gentoo Penguins",
+       x = "Flipper length (mm)",
+       y = "Body mass (g)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme_minimal()
+```
   
   
+<small>
+Penguins data were collected and made available by Dr. Kristen Gorman and the Palmer Station, Antarctica LTER, a member of the Long Term Ecological Research Network.
+[https://github.com/allisonhorst/palmerpenguins]
+</small>
+
 
 ## Statistiques descriptives 
 Décrire, résumer, synthétiser  les propriétés d'une **population** à partir des **variables** qui décrivent ses individus.
@@ -151,12 +175,16 @@ Nous ferons majoritairement de la statistique **descriptive**
  
  "données", "corpus", "échantillon", "data"
  
+<br><br>
+très souvent tabulaires 
+ 
+ 
 ## Individus
 <br><br>
 
  **Unité** statistique **élémentaire**: personnes, logements, ...
  
- 
+ <br><br>
   $\rightarrow$ "les lignes du tableau"
 
 
@@ -165,20 +193,22 @@ Nous ferons majoritairement de la statistique **descriptive**
 <br><br>
 
  **Caractéristiques, propriétés** d’un individu, mesurées par des enquêtes, des observations...
-
+<br><br>
 $\rightarrow$ "les colonnes du tableau"  
 
 
 ## Types de variables 
 
 
-- **Qualitatives** : facteurs e.g. genre, CSP, type de pokemon,... notion de **modalité**
+- **Qualitatives** : facteurs e.g. genre, CSP, type de pokemon,... 
+<br>$\rightarrow$ notion de **modalité**
  
-- **Quantitatives** : nombres e.g. taille, masse, revenu, surface, points de vie,...  parfois exprimées avec des **unités** : m, kg, s
+- **Quantitatives** : nombres e.g. taille, masse, revenu, surface, points de vie,...  
+$\rightarrow$ parfois exprimées avec des **unités** : m, kg, s
 
 <br>
 
-<span style="color:red">&#9888;</span> **Valeurs** et **Nature** de données sont deux choses distinctes : 3≠trois≠III 
+<span style="color:red">&#9888;</span> **Valeurs** et **Nature** de données sont deux choses distinctes : 3≠trois≠III≠drei≠tres 
 <br>
 <br>
 <span style="color:red">&#9888;</span> Valeurs manquantes  :  NA , NaN, Null 
@@ -231,15 +261,8 @@ plot1
 ```
 
 
-## Les pièges de la statistique {.flexbox .vcenter}
 
-> « Les statistiques ont une particularité majeure:
-elles ne sont jamais les mêmes selon qu’elles sont avancées par un homme de gauche ou par un homme de droite.»
-
-
-<div style="align:right;"> Jacques Mailhot</div>
-
-## Les pièges de la statistique : exemple 1 
+## Difficultés de la statistique : exemple 1  
 
 
 Dette 2013 = 100 milliards € 
@@ -253,7 +276,7 @@ Qui dit la vérité?
 
 
 
-## Les pièges de la statistique:  exemple 2 
+## Difficultés de la statistique:  exemple 2 
 
 
 Sur les mêmes chiffres du bilan d’une entreprise en 2013 et 2014
@@ -279,7 +302,7 @@ Sur les mêmes chiffres du bilan d’une entreprise en 2013 et 2014
 </center>
 
 
-## Précautions : présence de groupes (paradoxe de Simpsons)
+## Précautions : en présence de groupes (paradoxe de Simpsons)
 
 
 
@@ -291,7 +314,7 @@ Sur les mêmes chiffres du bilan d’une entreprise en 2013 et 2014
 source: wikipedia
 </small>
 
-## Analyse univariée : plan du cours
+## Analyse univariée : plan 
 
 Objectif : **Décrire la répartition des valeurs** d'une variable
 
@@ -311,7 +334,8 @@ symétrie (Skewness) et aplatissement (Kurtosis)
 
 
 
-## Les variables (1)
+
+
 
 ## Données "non spatiales" 
 
@@ -326,34 +350,28 @@ Les variables sont des valeurs attributaires d'**individus**, leurs localisation
   quid des **distances** ? $\rightarrow$ modèle gravitaire , réseau etc.
 
 
-## Variables **quantitatives**
-
-Exemple ?
+## \ 
 
 #### variables quantitatives **continues** : $var \in \mathbb{R}$
 
 Valeurs réelles,  toutes les valeurs de l'intervalle de mesures peuvent exister 
+<br><br>
 
 #### variables quantitatives **discrètes**  : $var \in \mathbb{N}$ 
 
 Valeurs entières, pour des attributs **dénombrables** (comptage) , 
 
-parfois utilisées pour encoder une variable qualitative à 2 modalité e.g. présence (1) , absence(0)
+parfois utilisées pour encoder une variable qualitative à deux modalités e.g. présence (1) , absence(0)
 
 
 ## Variables **qualitatives**
-
-Exemple ? 
-
-<br>
 
 les valeurs sont prises dans un ensemble **fini** de valeurs possibles, défini par **extension** (i.e. on donne la liste des valeurs possibles)
 
 
 $\rightarrow$ notion de **modalités** 
 
-## Variables **qualitatives**
-
+## \ 
 
 #### variables qualitatives **nominales**
 
@@ -393,18 +411,20 @@ e.g. IRIS
 
 
 
-## Echelle d’analyse individuelle vs. Echelle d’analyse agrégée 
+## Échelle individuelle vs. Échelle agrégée 
 
+**Désagrégation** ou  **Ventilation** 
+<br>
+  $\rightarrow$ Inférer des caractéristiques individuelles à partir de l’analyse de données agrégées
 
-  Inférer à partir de l’analyse de données agrégées des caractéristiques individuelles **Désagrégation** ou  **Ventilation** 
-
-
-Inférer des caractéristiques concernant les unités agrégées d’après les caractéristiques individuelles: **Agrégation** 
-
-
+<br>
+**Agrégation** 
+<br>
+  $\rightarrow$ Inférer des caractéristiques concernant les unités agrégées d’après les caractéristiques individuelles 
+<br><br>
 <span style="color:red">&#9888;</span>pas toujours possible et pas immédiat !<span style="color:red">&#9888;</span>
 
-## le MAUP (Modifibale Aereal Unit Problème)
+## le MAUP (Modifibale Aereal Unit Problem)
 
 Problème d'agrégation spatiale : les résultats d'une analyse statistique spatiale dépendent du choix d'agragation 
 
@@ -429,9 +449,10 @@ Exemples tirés du rapport ESPON :
 </div>
 
 
-# Statistique descriptive univariée : la tendance
+## Statistique descriptive univariée : la tendance
+<br><br><br>
+Moyenne(s), mode , médiane 
 
-## Moyenne
 
 ## Moyenne
 
@@ -440,17 +461,20 @@ $\displaystyle \bar{x} = \frac{1}{n}\sum_{i=0}^{n} x_i$
 
 ## Moyenne pondérée
 
-Lors que les valeurs n'ont pas le même poids (e.g. poids = effectif de la valeur)
+Lors que les valeurs n'ont pas le même poids <br>
+<br>
+par exemple poids = effectif de la valeur dans la population.
+<br>
 
 $\displaystyle \bar{x} = \frac{1}{\sum_{i=0}^n pi}\sum_{i=0}^{n} p_i x_i$
 
 
 ## Avantages et inconvénients de la moyenne
 
-## Avantage
+### Avantage
   Chaque valeur compte
 
-## Inconvénients 
+### Inconvénients 
 
 * sensibilité aux valeurs extrèmes 
 * pas de signification sur les valeurs discrètes (e.g. 2.5 enfants par femme)
@@ -493,21 +517,18 @@ e.g. on reçoit une mesure chaque seconde, très bruitée, et on désire affiche
 **Mode** :  valeur la plus fréquente (effectif max.) de la série de valeurs que prend une variable.
 <br>
 <br>
-<span style="color:red">&#9888;</span> si variable quantitative continue<span style="color:red">&#9888;</span>
-
-$\rightarrow$ nécessite une classification préalable
-
-Dans ce cas le mode est la moyenne des valeurs min et max des bornes de la classe de plus grand effectif.
+<span style="color:red">&#9888;</span> si variable quantitative continue : faire une classification .
+Dans ce cas, le mode est la moyenne des valeurs min et max des bornes de la classe de plus grand effectif.
 
 ## Avantages et inconvénients du mode
 
-## Avantages 
+### Avantages 
 Peu sensible aux valeurs extrêmes (moins sensible que la moyenne)
 
 Signification concrète : la situation la plus fréquente
 
-## Inconvénients 
-Ne dépends pas de toutes les observations : la modification d'une seule valeur n’entraine pas une modification du mode
+### Inconvénients 
+Ne dépends pas de toutes les observations : la modification d'une seule valeur n’entraîne pas une modification du mode
 
 ## la Médiane 
 
@@ -527,14 +548,14 @@ si $n$ pair, la valeur médiane est entre deux valeurs et est égale à la moyen
 
 ## Avantages et inconvénients de la médiane 
 
-## Avantages 
+### Avantages 
 Plus pertinente que la moyenne
 
 Peu sensible aux valeurs extrêmes 
 
 A une signification concrète : divise en deux la distribution : un individu sur deux a une valeur inférieure ou supérieure à celle-ci
 
-## Inconvénient 
+### Inconvénient 
 Ne dépend pas de toutes les observations : la modification d'une seule valeur n’entraine pas une modification de la médiane 
 
 
@@ -547,7 +568,7 @@ $\rightarrow$ **Toujours** afficher l'histogramme ou la distribution de densité
 
 Le **mode** est privilégié pour les valeurs **nominales** et si on désire considérer «le cas le plus fréquent»
 
-Distributions de variables continues sans longues traines ? <br>
+Distribution sans longue traîne ? <br>
 $\rightarrow$ moyenne et médiane
 
 Plusieurs modes dans la distribution ?<br>
@@ -610,7 +631,7 @@ barplot(tx , las=2)
 
 
 
-# Statistique descriptive univariée : la dispersion
+## Statistique descriptive univariée : la dispersion
 
 ## La dispersion statistique 
 
@@ -652,39 +673,49 @@ Si $var_X = 0$ ou $\sigma_X = 0$ , alors $X$ est **constante**.
 
 Un écart-type faible indique que les valeurs sont réparties de façon **homogène** autour de la moyenne.
 
-## Mise en garde {.flexbox .vcenter}
+## Précaution {.flexbox .vcenter}
 
-<span style="color:red; font-size:1.5em;">&#9888;</span><span style="font-size:1.3em;">Variance et écart type n'ont d'intérêt que pour qualifier des distributions **unimodales**, et (à peu près) **symétriques**</span> <span style="color:red;font-size:1.5em;">&#9888;</span>
+<span style="color:red; font-size:1.5em;">&#9888;</span>Variance et écart type n'ont d'intérêt que pour qualifier des distributions **unimodales**, et (à peu près) **symétriques**
+
 
 (i.e. proche de la Gaussienne)
 
 
 ## Lorsque $X\sim \mathscr{N}(\mu,\sigma)$
 
-```{r stddev1, cache=TRUE}
+```{r stddev1, cache=TRUE, echo=FALSE}
+library(latex2exp)
 X <- data.frame(value=rnorm(1900))
 plot1 <- ggplot(X)+
         geom_line(aes(x = value),stat="density", color="#44DD99", lwd=1.2)+
         geom_vline(xintercept = c(-sd(X$value), sd(X$value)), color="red")+
         geom_vline(xintercept = c(-2*sd(X$value), 2*sd(X$value)), color="blue")+
-        annotate("text", x=c(1.5,2.5), y=c(0.3,0.12), colour=c("red","blue"),label=c("  68,27%\n de l'effectif ","95,45%\n de l'effectif "))+
+        annotate("text", x=c(1.5,2.5), y=c(0.3,0.12), colour=c("red","blue"),label=c("68,27% de l'effectif ", "95,45% de l'effectif "))+
         theme_light()
 plot1
 ```
 
 
+<br>
+$[-\sigma;\sigma] \approx \frac{2}{3}$  de l'effectif
+<br>
+<br>
+$[-2\sigma;2\sigma] \approx$ 95% de l'effectif
+
 ## Quantiles
 
-La **médiane** sépare une population en **2** classes d'égal effectif selon la valeur d'une variable quantitative.
+La **médiane** sépare une population en **deux** classes d'égal effectif selon la valeur d'une variable (quantitative).
 
-Les **quantiles**  séparent une population en **$n$** classes d'égal effectif.
+Les **quantiles**  séparent une population en **$n$** classes d'égal effectif 
 
-Les **quartiles** d'une population selon une variable $X$ sont 3 valeurs, $Q_1,Q_2,Q3$ qui séparent la population en 4 classes d'égal effectif.
+Les **quartiles** d'une population selon une variable $X$ sont trois valeurs, $Q_1,Q_2,Q_3$ qui séparent la population en **quatre** classes d'égal effectif.
+<small>
 
   * 25% des valeurs de $X$ sont strictement inférieures à $Q_1$
   * 50% des valeurs de $X$ sont strictement inférieures à $Q_2$ (médiane)
   * 75% des valeurs de $X$ sont strictement inférieures à $Q_3$
-    
+  
+</small>
 
 ## Déciles
 
@@ -714,13 +745,13 @@ plot1
 
 ## Avantages et inconvénient des quantiles
 
-## Avantages
+### Avantages
 
 Peu sensibles aux distributions aplaties et aux valeurs extrèmes
 
 L'écart inter-quantile est plus robuste que l'écart-type
 
-## Inconvénients
+### Inconvénients
 
 Parfois délicat pour les variables quantitatives discrètes
 
@@ -728,9 +759,9 @@ Les écarts inter-quantiles négligent l'influence des valeurs extrèmes sur la 
 
 ## Le coefficient de variation 
 
-Le coefficient de variation ($CV$) est une autre mesure de **dispersion** .
+Le **coefficient de variation** ($CV$) est une autre mesure de dispersion.
 
-C'est le ratio entre l'écart-type $\sigma_x$ et la moyenne $\bar{x}$ d'une variable quantitative X.
+C'est le ratio entre l'écart-type $\sigma_x$ et la moyenne $\bar{x}$ d'une variable quantitative $X$.
 
 $\displaystyle CV(X)=\frac{\sigma_x}{\bar{x}}$
 
@@ -753,16 +784,17 @@ Commune B :  moyenne = 152 euros, $\sigma$ = 8 euros
 
 Pour quelle commune les aides sont les plus homogènes?
 
-On peut aussi comparer des distribution de valeurs exprimées dans des unités différentes !
+<br><br>
+<small>On pourrait aussi comparer des distribution de valeurs exprimées dans des unités différentes !</small>
 
-## (Mauvaise) Comparaison visuelle de deux distributions
+## **(Mauvaise)** Comparaison visuelle de deux distributions
 
 <span style="font-size:60%; margin-top:-50px">Pour échantilloner dans une loi normale : fonction `rnorm`</span>
 
 ```{r compDistNorm1, fig.height=2.8}
 A <-  rnorm(n = 10000, mean = 390, sd = 30)
 B <-  rnorm(n = 10000, mean = 152, sd = 8)
-par(mfrow=c(1, 2))
+par(mfrow=c(1, 2)) #2 graphes en colonnes
 hist(A, probability = T)
 lines(density(A), col="red")
 hist(B, probability = T)
@@ -774,7 +806,7 @@ Qu'est ce qui ne va pas ?
 ##  Comparaison visuelle de dispersion de deux distributions
 
 
-Il faut une échelle commune !
+Il faut une **échelle commune** !
 
 ```{r compDistNorm2}
 A <-  rnorm(n = 10000, mean = 390, sd = 30)
@@ -788,9 +820,9 @@ lines(density(B), col="red")
 
 
 
-# Statistique descriptive univariée : la forme
+## Statistique descriptive univariée : la forme
   
-## Asymétrie des distributions.
+## **Asymétrie** des distributions.
 
 
 ```{r asym1, echo=FALSE, fig.width=8, fig.height=4, cache=TRUE}
@@ -826,22 +858,25 @@ annotate("text", x=3.5, y=0.34, colour=c("orange"),label="mode")
 
 
 ## les Coefficients de Pearson
+<br><br>
 
-2 moyens simples d'estimer l'asymétrie 
-
+Deux moyens simples d'estimer l'asymétrie 
+<br><br>
 $\displaystyle C_1 = \frac{\bar{x} - mode(X)}{\sigma_x}$
-
+<br><br>
 $\displaystyle C_2 = \frac{3(\bar{x} - mediane(X))}{\sigma_x}$
 
 ## Interprétation des coefficients d'asymétrie
+<br><br>
 
   * si le coefficient **nul**, la distribution est **symétrique**
-  * si le coefficient est **négatif**, la distribution est **déformée à gauche** de la médiane (sur-représentation de valeurs faibles)
-  * si le coefficient est **positif**, la distribution est **déformée à droite** de la médiane (sur-représentation de valeurs fortes)
+  * si le coefficient est **négatif**, la distribution est **déformée à gauche** de la médiane (sur-représentation de valeurs faibles, à gauche)
+  * si le coefficient est **positif**, la distribution est **déformée à droite** de la médiane (sur-représentation de valeurs fortes, à droite)
 
 ## Le coefficient de Fischer
+<br><br>
 
-Le coefficient est le moment  d'ordre 3  de la variable $X$ ( de moyenne $\mu$ et d'écart-type $\sigma$) **centrée réduite**
+Ce coefficient est le moment  d'ordre 3  de la variable $X$ ( de moyenne $\mu$ et d'écart-type $\sigma$) **centrée réduite**
 
 $\displaystyle skewness'=\mathbb{E}\bigg[\bigg(\frac{X-\mu}{\sigma}\bigg)^3\bigg]=\frac{\sum_{i=0}^{n} (x_i - \bar{x})^3}{n\sigma^3}$
 
@@ -850,11 +885,7 @@ $\displaystyle skewness'=\mathbb{E}\bigg[\bigg(\frac{X-\mu}{\sigma}\bigg)^3\bigg
 ## L'aplatissement des distributions (kurtosis)
 
 
-
-
-
-
-```{r kurtos1, echo=FALSE, fig.width=8, fig.height=3, cache=TRUE}
+```{r kurtos1, echo=FALSE, fig.width=10, fig.height=2, cache=TRUE}
 
 normaleC <- 1 
 picC <- 0.6
@@ -887,7 +918,7 @@ Courbe applatie: Variations importantes, distribution relativement hétérogène
 
 ## Coefficient d'applatissement : kurtosis 
 
-Coefficient non normalisé)
+Coefficient non normalisé :
 
 
 $\displaystyle K=\frac{\sum_{i=1}^{n}(x_i -\bar{x})^4}{n\sigma^4}$
@@ -900,7 +931,9 @@ Si $K<3$, la distribution est **moins applatie**
 
 On normalise parfois en considérant $K'=K-3$ (excès d'applatissement)
 
-# Transformations des données 
+
+
+## Transformations des données 
 
 ## Variables centrées-réduites 
 
