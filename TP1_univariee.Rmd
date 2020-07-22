@@ -6,6 +6,10 @@ output:
   html_document:
     toc: true
     toc_depth: 3
+    theme: lumen
+    highlight: kate
+    number_sections: yes
+    number_subsections: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -22,13 +26,16 @@ Ce document montre l'essentiel des manipulations à effectuer avec R  pour répo
 Il suppose une connaissance préalable de la syntaxe R, de préférence à l'aide de l'IDE [RStudio](https://www.rstudio.com/) et les bases du package `sf` [(tutoriel ici)](https://r-spatial.github.io/sf/articles/sf1.html) qui implémente la norme SF comme dans PostGIS.
 
 
-La connaissance du  package `dplyr` et de sa notation à base de pipe (%>%) sera utile pour écrire des chaînes de traitements plus concises que celles listées ici.
+La connaissance du  package `dplyr` et de sa notation à base de l'opérateur pipe (%>%) sera utile pour écrire des chaînes de traitements plus concises que celles listées ici.
 
 
 
 ## Chargement des données.
 
-Nous avons récupéré le fichier des données spatialisé sous le format GeoJSON. D'autres formats sont disponibles, notamment via l'API du site.
+Nous avons récupéré le fichier des données spatialisé sous le format GeoJSON.
+ [disponible ici](https://opendata.paris.fr/explore/dataset/les-arbres/information/?disjunctive.typeemplacement&disjunctive.arrondissement&disjunctive.libellefrancais&disjunctive.genre&disjunctive.espece&disjunctive.varieteoucultivar&disjunctive.stadedeveloppement&disjunctive.remarquable). 
+ 
+ D'autres formats sont disponibles, notamment via l'API du site.
 Nous allons utiliser le package `sf` pour manipuler les données spatiales. 
 Pour lire le GeoJSON , nous avons besoin d'installer un package spécifique : `geojsonsf`, qui se charge de la conversion entre des objets geographiques au format GeoJSON et leur représentation au format `sf`.   
 
@@ -85,7 +92,7 @@ names(arbres) # affiche le nom des colonnes (variables)
 
 
 Le chargement du fichier peut être un peu long: il contient 203818 observations le jour de la rédaction de ce support. Pour connaitre la structure de l'objet , nous utilisons la fonction `str()` qui nous donne un aperçu du type des colonnes du dataframe que nous manipulons. 
-C'est un dataframe particulier puisqu'il est également de la classe `sf` : l'un de ses colonnes est dédié à la description de sa géométrie (ici, des points 2D)
+C'est un dataframe particulier puisqu'il est également de la classe `sf` : l'un de ses colonnes est dédié à la description de sa géométrie (ici, des points 2D) dans la colonne dédiée : `geometry`
 
 
 
@@ -391,6 +398,10 @@ leplusdense <- top_n(quartiers,1,dens)
 leplusdense$l_qu
 ```
 
+La densité des bois de Paris ne vous choque pas ?
+D'où viennent ces faibles densités ? 
+Comment les corriger ? 
+
 
 ### Cartographie par symboles proportionnels
 
@@ -414,3 +425,24 @@ legendCirclesSymbols(pos = "topleft", title.txt = "nombre d'arbres", title.cex =
 
 
 Le package `cartography` est un excellent package, que je recommande vivement.
+
+
+## indications pour le devoir : Relation avec le reseau routiers 
+
+
+On commence par charger les deux objets d'intérêt : le semis de points et le réseau routier.
+
+```{r rezo1, cache=TRUE}
+roads <-  st_read("./voie.shp")
+roads <-  st_transform(roads,2154)
+plot(roads$geometry)
+``` 
+
+
+Puis on calcule la distance des arbres au segment de route le plus proche:
+
+
+
+
+
+
