@@ -443,6 +443,12 @@ Puis on calcule la distance des arbres au segment de route le plus proche:
 
 
 
+```{r rezo2, cache=TRUE}
+dmat <-  st_distance(arbres_intramuros, roads)
+head(dmat)
+``` 
+
+
 
 
 
