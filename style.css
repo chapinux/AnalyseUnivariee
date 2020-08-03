@@ -6,11 +6,13 @@ pre {
 h1 { 
   font-size: 62px;
   color: #96C31E;
+  font: 1.2em "Arial", sans-serif;
 }
 h2 { 
   font-size: 32px;
   color: #96C31E; /* vert IGN*/
   border-bottom: 2px solid #96C31E;
+  font: 1.2em "Arial", sans-serif;
 }
 
 h3 { 
@@ -20,6 +22,7 @@ h3 {
   margin-top: -20px;
   margin-left: -40px;
   text-align: left;
+font: 1.2em "Arial", sans-serif;
 }
 
 
@@ -39,6 +42,7 @@ h3 {
 
 .reveal {
 	background : #FFFFFF;
+  font-size: 2em;
 }
 
 .reveal p {
@@ -58,6 +62,15 @@ h3 {
     display: block;
     border: 1px solid #333;    
 }
+
+.col3 {
+    columns: 3 200px;         /* number of columns and width in pixels*/
+    -webkit-columns: 3 200px; /* chrome, safari */
+    -moz-columns: 3 200px; /* firefox */
+    display: inline;
+    border: 1px solid #333;    
+}
+
 
  .reveal section img {
   border: 1px solid #333;    

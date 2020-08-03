@@ -26,6 +26,9 @@ library(xtable)
 library(ggplot2)
 library(gridExtra)
 library(dplyr)
+library(sf)
+quartiers <-  st_read("quartier_paris.shp")
+
 ```
 
 
@@ -621,12 +624,148 @@ Si $K<3$, la distribution est **moins applatie**
 On normalise parfois en considérant $K'=K-3$ (excès d'applatissement)
 
 
+## Distribution et Échelle de couleurs
+
+Pour une variable quanti. continue, connaître la forme de la distribution affine le choix des classes
+
+en général 
+
+- 5,7 ou 9 classes :
+  - $<5$ trop peu de détails  
+  - $>9$ difficle de distinguer les classes proches
+
+## Distribution et Échelle de couleurs
+
+Méthodes de classifications de Qgis
+
+- Ruptures Naturelles (Jenks) : Minimisation des variances intra-classe et maximisation des variances inter-classe
+- Effectifs égaux (quantiles)
+- Intervalles égaux 
+- Ecart-type  :  intervales de 1 ou 0.5 $\sigma$
+- Jolies ruptures :  intervalle égaux "décalés" pour faire joli : nombre ronds, puissances de 10, ... 
+
+
+
+## Exemple avec la surface des quartiers de Paris 
+
+
+```{r quartierparis, echo=TRUE,eval=FALSE}
+quartiers <-  st_read("quartier_paris.shp")
+plot(quartiers$geometry)
+```
+
+
+```{r quartierparis2, eval=TRUE, echo=FALSE, cache=TRUE, fig.width=8, fig.height=5}
+par(mar=c(0,0,0,0))
+plot(quartiers$geometry)
+```
+
+
+## Allure de la distribution
+
+
+```{r quartierparis3, eval=TRUE, echo=TRUE, cache=TRUE, fig.width=8, fig.height=5}
+hist(quartiers$surface,breaks = 15)
+```
+
+## Affichage par défaut : 
+
+```{r quartierparis4, eval=TRUE, cache=TRUE, fig.width=8, fig.height=4}
+par(mar=c(0,0,0,0))
+plot(quartiers["surface"])
+```
+
+par defaut la fonction `plot`  de sf utilise la méthode "pretty" avec 10 ruptures ($9\pm1$ classes) => ce sont des intervalles égaux. 
+
+
+## Jenks à 5 , 7 et 9 classes
+
+<div class="col3">
+```{r quartierparis6, eval=TRUE, cache=TRUE, echo=FALSE, fig.width=12, fig.height=3}
+par(mar=c(0,0,0,0))
+plot(quartiers["surface"], breaks="jenks", nbreaks = 5, main = "5 breaks")
+plot(quartiers["surface"], breaks="jenks", nbreaks = 7, main="7 breaks")
+plot(quartiers["surface"], breaks="jenks", nbreaks = 9, main= "9 breaks")
+```
+</div>
+
+
+
+## Jenks à 5 , 7 et 9 classes
+Code R correspondant :
+
+<div class="col3">
+```{r quartierparis6bis, eval=FALSE, cache=TRUE, echo=TRUE, fig.width=12, fig.height=3}
+par(mar=c(0,0,0,0))
+plot(quartiers["surface"], breaks="jenks", nbreaks = 5, main = "5 breaks")
+plot(quartiers["surface"], breaks="jenks", nbreaks = 7, main="7 breaks")
+plot(quartiers["surface"], breaks="jenks", nbreaks = 9, main= "9 breaks")
+```
+</div>
+
+
+
+## Effectifs égaux
+
+```{r quartierparis7, eval=TRUE, cache=TRUE, echo=FALSE, fig.width=12, fig.height=6}
+par(mar=c(0,0,0,0))
+plot(quartiers["surface"], breaks="quantile",main = "Effectifs égaux")
+```
+
+
+
+## Intervalles égaux (7)
+
+```{r quartierparis8, eval=TRUE, cache=TRUE, echo=TRUE, fig.width=12, fig.height=6}
+par(mar=c(0,0,0,0))
+plot(quartiers["surface"], breaks="equal", nbreaks = 7, main = "Intervalles égaux")
+```
+
+
+## Ecart types
+
+```{r quartierparis9, eval=TRUE, cache=TRUE, echo=TRUE, fig.width=12, fig.height=6}
+par(mar=c(0,0,0,0))
+plot(quartiers["surface"], breaks="sd",main = "Écart-type")
+```
+
+$\approx$ méthode des jolies ruptures sur variable centrée réduite
+
+
+## Guides de choix de la méthode de classification 
+
+
+Pour les classification manuelles : 
+<br><br>
+
+- les classes **doivent** contenir toutes les valeurs, être sans recouvrement, contigües et distinctes.
+- Procéder par essai-erreur
+- attention aux décimales et aux extrémités
+<br><br>
+
+
+- si distribution uniforme $\rightarrow$ Intervalles égaux
+- si distribution asymétrique $\rightarrow$ Effectifs égaux, Jenks , progression géométrique (rare).
+- si distribution symétrique $\rightarrow$ Écart-type, intervalle égaux
+
+
+
+## Autres classifications 
+
+consultez la doc de la fonction `classInt` du package du même nom
 
 ## Transformations des données 
 
+
+- $x \mapsto log(x)$ pour une distribution asymétrique à droite ou  $x \mapsto \sqrt x$ si moins asymétrique
+
+- $x \mapsto x^2$ pour une distribution asymétrique à gauche ou $x \mapsto x^3$ si très asymétrique 
+
+(<span style="color:red">&#9888;</span> toujours vérifier l'allure de la distribution transformée)
+
 ## Variables centrées-réduites 
 
-<span style="color:red">&#9888;</span> En principe, uniquement lorsque la distribution d'une variable est proche d'une gaussienne <span style="color:red">&#9888;</span> 
+<span style="color:red">&#9888; </span> En principe, uniquement lorsque la distribution d'une variable est proche d'une gaussienne <span style="color:red">&#9888;</span> 
 
 
 Centrer : soustraire la moyenne
@@ -636,7 +775,7 @@ Réduire : diviser par l'écart-type
 
 une variable **centrée réduite** est exprimée en «écarts-types à la moyenne»
 
-$\rightarrow$ permet de repérer les valeurs extrèmes (<2 ou >2)
+$\rightarrow$ permet de repérer les valeurs extrèmes ($<2\sigma$ ou $>2\sigma$)
 
 $\rightarrow$ utile pour comparer des individus selon un grand nombre de variables (tableaux de synthèse)
 
