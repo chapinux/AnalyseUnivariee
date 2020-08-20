@@ -131,7 +131,7 @@ symétrie (Skewness) et aplatissement (Kurtosis)
 
 
 
-## Statistique descriptive univariée : la tendance
+# Statistique descriptive univariée : la tendance
 <br><br><br>
 Moyenne(s), mode , médiane 
 
@@ -313,7 +313,11 @@ barplot(tx , las=2)
 
 
 
-## Statistique descriptive univariée : la dispersion
+# Statistique descriptive univariée : la dispersion
+<br><br><br>
+Variance, écart-type, Coeff. de variation.
+
+
 
 ## La **dispersion** statistique 
 
@@ -512,7 +516,12 @@ lines(density(B), col="red")
 
 
 
-## Statistique descriptive univariée : la forme
+# Statistique descriptive univariée : la forme
+ 
+ <br>
+ <br> <br> 
+ Symétrie , applatissement
+ 
   
 ## **Asymétrie** des distributions.
 
@@ -624,15 +633,21 @@ Si $K<3$, la distribution est **moins applatie**
 On normalise parfois en considérant $K'=K-3$ (excès d'applatissement)
 
 
+# Représentation d'une distribution et Échelle de couleurs
+
+
 ## Distribution et Échelle de couleurs
 
-Pour une variable quanti. continue, connaître la forme de la distribution affine le choix des classes
+Pour une variable quanti. continue qu'on souhaite colorer, il n'est pas toujours possible de graduer une échelle de couleur continue. 
+<br>
+Il faut (souvent) classer les valeurs en catégories.
+Le **nombre** de classes et les **méthodes** de classification varient. 
 
-en général 
+En général 
 
 - 5,7 ou 9 classes :
   - $<5$ trop peu de détails  
-  - $>9$ difficle de distinguer les classes proches
+  - $>9$ difficile de distinguer les classes proches
 
 ## Distribution et Échelle de couleurs
 
@@ -779,6 +794,213 @@ $\rightarrow$ permet de repérer les valeurs extrèmes ($<2\sigma$ ou $>2\sigma$
 
 $\rightarrow$ utile pour comparer des individus selon un grand nombre de variables (tableaux de synthèse)
 
+
+# Visualiser une distribution
+
+- Histogramme 
+- Distribution
+- BoxPlot
+- Violin plot
+- Pyramides (histogrammes jusxtaposés)
+- Polygones de fréquences
+- Distribution cumulée , Fonction de répartition , CDF
+- Dot strip plot
+
+
+## Histogramme : Code R + ggplot
+
+```{r histo_code_1, cache=T, warning=F, echo=T,fig.width=8, fig.height=3}
+library(palmerpenguins)
+data(package = 'palmerpenguins')
+mydata <-  penguins
+histo_mass <- ggplot(mydata)+
+  geom_histogram(aes(x=body_mass_g), fill="darkorchid4", color="darkgray", bins=50)+
+  labs(title = "Penguins Body Mass", subtitle = "Histogram")+
+  ylab("Count")+theme_light()
+histo_mass
+```
+
+
+## Distribution : Code R + ggplot
+
+<span style="color:red">&#9888;</span>  ce n'est pas exactement une probabilité, mais une **densité** de probabilité.
+Pour obtenir la probabilité , il faut intégrer sur un petit $dx$.
+
+
+```{r distrib_code_1, cache=T, warning=F, echo=T,fig.width=8, fig.height=3}
+library(palmerpenguins)
+data(package = 'palmerpenguins')
+mydata <-  penguins
+distrib_mass <- ggplot(mydata)+
+  geom_density(aes(x=body_mass_g), fill="darkorchid4", color="darkgray")+
+  geom_vline(aes(xintercept=mean(body_mass_g, na.rm = T)), color="black", size=0.4, linetype="dashed" )+
+  labs(title = "Penguins Body Mass", subtitle = "Probability density and mean")+
+  ylab("Count")+theme_light()
+distrib_mass
+```
+
+
+
+## BoxPlot : Code R + ggplot
+
+
+```{r boxplot_code_1, cache=T, warning=F, echo=T,fig.width=8, fig.height=3}
+library(palmerpenguins)
+data(package = 'palmerpenguins')
+mydata <-  penguins
+boxplot_mass <- ggplot(mydata)+
+  geom_boxplot(aes(x=body_mass_g, y=species, color=species))+
+  labs(title = "Penguins Body Mass", subtitle = "BoxPlot by Species")+
+  ylab("Count")+theme_light()
+boxplot_mass
+```
+
+## Violin plot
+
+Dsitribution+miroir
+Utile pour des distributions complexes, e.g.  mal résumées par la moyenne et la dispersion.
+
+```{r violin_code_1, cache=T, warning=F, echo=T,fig.width=8, fig.height=3}
+library(palmerpenguins)
+data(package = 'palmerpenguins')
+mydata <-  penguins
+violin_mass <- ggplot(mydata)+
+  geom_violin(aes(y=body_mass_g, x=species, fill=species), color="gray", trim=F)+
+  labs(title = "Penguins Body Mass", subtitle = "ViolinPlot by Species")+
+  ylab("Count")+theme_light()
+violin_mass
+```
+
+
+## Violin plot et Boxplot  : Code R + ggplot 2
+
+
+
+```{r violin_code_2, cache=T, warning=F, echo=T,fig.width=8, fig.height=3}
+library(palmerpenguins)
+data(package = 'palmerpenguins')
+mydata <-  penguins
+violin_mass <- ggplot(mydata)+
+  geom_violin(aes(y=body_mass_g, x=species, fill=species), color="lightgray", trim=F)+
+  geom_boxplot(aes(y=body_mass_g, x=species, fill=species), color="black", fill="#eeeeee" ,width=0.1)+
+  labs(title = "Penguins Body Mass", subtitle = "ViolinPlot and Boxplot by Species")+
+  ylab("Count")+theme_light()
+violin_mass
+```
+
+
+## Pyramides (histogrammes juxtaposés) 
+
+lorsqu'une des variables est qualitatives à deux modalités :
+
+```{r pyramide_code_1, cache=T, warning=F, echo=T,fig.width=8, fig.height=3, message=F}
+library(palmerpenguins)
+data(package = 'palmerpenguins')
+mydata <-  penguins
+pyramide_mass <-  ggplot(mydata, aes(fill = sex)) + 
+  geom_bar(data = subset(mydata, sex == "female"), stat = "bin", aes(x=body_mass_g, y=..count..*(-1)), color="grey") +
+  geom_bar(data = subset(mydata, sex == "male"), stat = "bin", aes(x=body_mass_g), color="grey") + 
+  scale_y_continuous(labels = paste0(as.character(c(seq(20, 0, -10), seq(10, 20, 10))))) +
+  ylab("count")+  coord_flip()+
+  labs(title = "Penguins Body Mass", subtitle = "Pyramid Plot by sex")+
+  theme_light()
+  
+pyramide_mass
+```
+
+## Polygones de fréquences
+
+
+Utile pour comparer plusieurs distributions
+
+
+```{r frequpoly_code1, cache=T, warning=F, echo=T,fig.width=8, fig.height=3}
+library(palmerpenguins)
+data(package = 'palmerpenguins')
+mydata <-  penguins
+freqpoly_mass <- ggplot(mydata)+
+  geom_freqpoly(aes(x=body_mass_g, color=species))+
+  labs(title = "Penguins Body Mass", subtitle = "Frequence Polygons")+
+  ylab("Count")+theme_light()
+freqpoly_mass
+```
+
+
+
+
+## Distribution cumulée , Fonction de répartition , CDF
+
+Courbe $x,y$,
+<br>
+en $x$ la valeur de la variable $V$, en $y$ la probabilité empririque d'avoir dans la population, un individu pour lequel $V\leq x$
+
+i.e. c'est la fonction  <br>
+$F_{V}(x)=\mathbb {P} (V\leq x)$
+
+
+```{r CDF1 , cache = TRUE, fig.width=8, fig.height=3, echo=F, warning=F}
+library(palmerpenguins)
+data(package = 'palmerpenguins')
+mydata <-  penguins
+plot_mass <- ggplot(mydata, aes(x= body_mass_g))+
+  stat_ecdf(color="darkorchid4")+
+  labs(title = "Penguins Body Mass", subtitle = "Cumulative Distribution Function")+
+  ylab("Probability")+theme_light()
+plot_mass
+```
+
+
+## Distribution cumulée , Fonction de répartition , CDF
+<br><br>
+Permet de superposer les CDF de sous groupes de la population. 
+ici : la race des penguins
+
+```{r CDF_groupe , cache = TRUE, fig.width=8, fig.height=3, echo=F, warning=F}
+library(palmerpenguins)
+data(package = 'palmerpenguins')
+mydata <-  penguins
+plot_mass <- ggplot(mydata)+
+  stat_ecdf(aes(x= body_mass_g, color=species))+
+  labs(title = "Penguins Body Mass by Species", subtitle = "Cumulative Distribution Function")+
+  ylab("Probability")+theme_light()
+plot_mass
+```
+
+
+
+## Distribution cumulée simple : Code R + ggplot
+
+```{r CDF_code , cache = TRUE, fig.width=8, fig.height=3, echo=T, warning=F}
+library(palmerpenguins)
+data(package = 'palmerpenguins')
+mydata <-  penguins
+plot_mass <- ggplot(mydata)+
+  stat_ecdf(aes(x= body_mass_g),color="darkorchid4")+
+  labs(title = "Penguins Body Mass", subtitle = "Cumulative Distribution Function")+
+  ylab("Probability")+theme_light()
+plot_mass
+```
+
+
+## Distribution cumulée par groupe : Code R + ggplot
+
+```{r CDF_code_groupe , cache = TRUE, fig.width=8, fig.height=3, echo=T, warning=F}
+library(palmerpenguins)
+data(package = 'palmerpenguins')
+mydata <-  penguins
+plot_mass <- ggplot(mydata)+
+  stat_ecdf(aes(x= body_mass_g,color=species))+    #on affecte la couleur à la variable modale  
+  labs(title = "Penguins Body Mass", subtitle = "Cumulative Distribution Function")+
+  ylab("Probability")+theme_light()
+plot_mass
+```
+
+
+## Dot Strip Plot
+
+# Bonus
+
+
 ## Fat-tail distributions
 
 
@@ -824,7 +1046,7 @@ $\implies$ mesure de façon plus robuste  tendance, dispersion et forme
 Ici : le logarithme décimal
 
 
-## Bonus : distribution rang-log(taille) 
+## Distribution rang-log(taille) 
 
 ```{r loglin1 , cache = TRUE, fig.width=8, fig.height=4, echo=FALSE}
 mydata <-  read.csv("pop_communes.csv")
@@ -835,6 +1057,7 @@ plot_PopVilles <- ggplot(mydata)+
   theme_light()
 plot_PopVilles
 ```
+
 
 
 
