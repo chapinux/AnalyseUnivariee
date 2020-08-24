@@ -910,7 +910,8 @@ pyramide_mass
 
 ## Polygones de fréquences
 
-
+"Histogramme en courbe"
+<br>
 Utile pour comparer plusieurs distributions
 
 
@@ -919,7 +920,7 @@ library(palmerpenguins)
 data(package = 'palmerpenguins')
 mydata <-  penguins
 freqpoly_mass <- ggplot(mydata)+
-  geom_freqpoly(aes(x=body_mass_g, color=species))+
+  geom_freqpoly(aes(x=body_mass_g, color=species), bins=50)+
   labs(title = "Penguins Body Mass", subtitle = "Frequence Polygons")+
   ylab("Count")+theme_light()
 freqpoly_mass
@@ -997,6 +998,11 @@ plot_mass
 
 
 ## Dot Strip Plot
+
+
+
+
+
 
 # Bonus
 
