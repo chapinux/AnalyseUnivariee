@@ -1,8 +1,8 @@
 ---
-title: "TP1 Analyse Univariée"
-subtitle: "M2 IGAST 2019-2020"
+title: "TP1 Analyse Univariée avec R"
+subtitle: ""
 author: ""
-date: ""
+date: "2020-2021"
 output: 
   pdf_document :
     number_sections: true    
@@ -18,6 +18,8 @@ knitr::opts_chunk$set(echo = TRUE)
 **Objectif principal** : Analyser et cartographier la distribution statistique et spatiale des arbres dans Paris 
 
 **Objectif secondaire** :  revoir les concepts d'analyse univariée, et réaliser des cartes avec R.
+
+
 ## Les données 
 
 
@@ -72,11 +74,6 @@ Les variables disponibles sont :
 
 
 
-## Outils 
-
-Les manipulations peuvent être effectuées avec PostGIS, QGIS et  R .
-Il est théoriquement possible de réaliser les traitements statistiques avec MS Excel, mais il est fortement recommandé d'utiliser R, langage dans lequel sera donné le corrigé.
-
 
 # Distribution statistiques des arbres
 
@@ -93,6 +90,19 @@ Vous disposez de deux jeux de données :
   - réaliser une jointure spatiale (laquelle ? ) 
   - calculer le nombre d'arbres par quartier
   - stocker le résutat dans une variable _nb_arbres_ dans la couche vectorielle des quartiers
+
+ 
+ 
+ Les packages `dplyr` et `sf`  sont requis 
+Fonctions utiles:
+`read_sf` pour cgarger les données spatiales  
+`plot`  pour afficher 
+`st_intersects` et `st_within`  prédicats pour la jointure spatiale
+`st_join` pour la jointure spatiale
+`filter` pour filtrer des données
+`table` pour des tables de contingences
+`st_crs`  pour connaître et fixer le CRS de données patiales 
+
   
 ## Calculer la densité d'arbres par quartier
 
@@ -103,13 +113,20 @@ Vous disposez de deux jeux de données :
   - calculer la densité d'arbres par quartiers
   - stocker le résutat dans une variable _dens_arbres_ dans la couche vectorielle des quartiers
   
+  
+  
+  Fonctions : 
+  
+  `st_area` pour calculer l'aire d'un polygone
+  
+  
 ## Comparaison des variables 
 
 Étapes :
 
   - Calculer la moyenne et l'écart-type du nombre et de la densité d'arbres
   - Afficher les histogrammes de ces deux variables 
-  - Calculer les indicateurs de formes des distributions de ces deux variables 
+  - Calculer les indicateurs de formes (kurtosis et skewness) des distributions de ces deux variables 
 
 Commenter les résultats obtenus
 
@@ -123,6 +140,10 @@ Commenter les résultats obtenus
 
 
 Commenter les cartes obtenues
+
+
+Fonctions utiles :  
+`arrange` pour trier un tableau  
 
 ## Cartographie du nombre d'arbres 
 
@@ -138,23 +159,45 @@ Commenter les cartes obtenues
 
 Etapes : 
   
-  - Réaliser une classification des densités en faisant varier la méthode de classification
-  - Cartographier la classification qui semble la plus adaptée 
+  - Cartographier la densité d'arbres par quartiers  
 
 Commenter la carte obtenue
+
+
+
 
 # Export des données 
 
 Exporter les données ajoutées (nombre et densité d'arbres) dans la couche vectorielle des quartiers de paris (format SHP ou CSV)
 
+Fonctions : `write.csv` et `write_sf`
 
-# Devoir (trop dur ?)
+
+# À terme (devoir) 
 
 
 A l'aide des données de voiries de Paris [disponible ici](https://opendata.paris.fr/explore/dataset/voie/export/), peut-on établir un lien entre le genre des arbres et leur distance à la voirie la plus proche ? 
 
 
+# Regressions linéaires 
 
 
+## regression 
+Réaliser une regression linéaire entre la hauteur et le diamètre de tronc des arbres.
+Quelles opérations de filtrage pourraient améliorer les résults de la regression
+
+Fonctions: 
+`lm` pour réaliser une régression linéaire 
 
 
+## regression par espèce 
+
+
+Réaliser des regressions linéaires entre la hauteur et le diamètre de tronc des arbres pour chaque espèce d'arbres.
+Cela améliore-t-il les résultats ? 
+
+
+## Cartographie des résidus 
+
+
+Réaliser une cartographie des résidus 
