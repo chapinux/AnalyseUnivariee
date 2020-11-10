@@ -22,7 +22,7 @@ library(tidyverse) #charge le package
 
 **Objectif principal** : Fournir une base de code qui utilise les packages `sf` (manipulation d'objets geographiques), `ggplot` (graphiques)  et `dplyr` (manipulation de données au sens large)  pour charger, afficher et requèter des objets spatiaux.
 
-**Objectif secondaire** :  Donner un apperçu des capacités SIG de R 
+**Objectif secondaire** :  Donner un aperçu des capacités SIG de R 
 
 
 # Prérequis 
@@ -64,7 +64,7 @@ library(tidyverse) #charge le package
 df <-  st_read("./consommation-annuelle-gaz-agregee-maille-iris.geojson")
 ```
 
-La fonction `st_read()` lit les données du fichier dont on donne le chemin d'accès, et s"lectionne le driver approprié en fonction du fichier (shp, geojson, etc.)
+La fonction `st_read()` lit les données du fichier dont on donne le chemin d'accès, et sélectionne le driver approprié en fonction du fichier (shp, geojson, etc.)
 
 
 Pour connaître le nom des attributs de la couche vecteur on utilise la fonction `names`. La fonction `head` affiche (par défaut) les 6 première lignes d'un dataframe. 
@@ -78,11 +78,13 @@ head(df)
 
 On constate d'emblée que certains codes IRIS sont non attribués (NA). On va commencer par filtrer le dataframe pour ne garder que les lignes dont le code IRIS est attribué . 
 
-## Filtrage des données : Valeurs NA
+### Filtrage des données : Valeurs NA
 
 La fonction `filter` du package `dplyr` permet de filtrer un dataframe selon un critère défini par une **condition** (booléenne), comme dans un `if()` .
 
 Nous allons utiliser la fonction `is.na` qui renvoie comme son nom l'indique TRUE si une valeur est NA , FALSE sinon.
+
+Exemple d'utilisation : 
 
 ```{r isNA, cache=TRUE}
 x <-  NA
@@ -93,13 +95,34 @@ is.na(y)
 ```
 
 
+On utilise cette fonction dans la condition de la fonction `filter` :
 
 ```{r removeNA, cache=TRUE}
 df_filtered <-  df %>% filter(!is.na(code_iris))
 cat(nrow(df) - nrow(df_filtered), " lignes retirées") 
+rm(df)
 ```
 
-On a filtré ainsi 12099 lignes dans ce dataset.
+On a filtré ainsi plusieurs lignes dans ce dataset.
+On supprime l'objet `df` de la mémoire pour économiser la RAM avec la fonction `rm()` : inutile de garder une copie d'un objet aussi lourd en mémoire.
+
+
+
+## Filtrage des données : Année 2013
+
+On réitère le filtrage avec l'attribut `annee` : 
+
+```{r year2017 , cache=TRUE}
+df_filtered <-  df_filtered %>%  filter(annee==2013)
+nrow(df_filtered)
+```
+
+
+
+
+
+
+
 
 Au passage nous avons vu: 
 
@@ -107,6 +130,7 @@ Au passage nous avons vu:
 - l'opératuer de négation `!` booléen
 - La fonction `nrow()`retourne le nombre de ligne d'un tableau.
 - La fonction `cat()` affiche la version "imprimable" d'une séquence d'objets, séparés par des virgules. 
+- la fonction `rm`qui suprrime un objet de la mémoire.
 - `dplyr` permet d'écrire les traitements en chaînes, au moyen de l'opérateur ` %>% ` , qui se lit **pipe** (en anglais hein, cf l'opérateur UNIX | ), et qui lie les objets aux fonctions. Nous reviendrons sur cette syntaxe plus tard.
 - remarquez la concision de l'opération de filtrage, qui tient en une seule ligne. 
 
@@ -127,13 +151,17 @@ En revanche, le dataframe dans son ensemble contient encore des valeurs NA, dans
 anyNA(df_filtered)
 ```
 
+
+
+
+
 ## Selection d'un sous ensemble de données 
 
 ### Premier affichage 
 
-Nous pouvons afficher la géométrie de nos données, mais étant donné le grand nombre d'entités (~200k), et la finesse des mailles IRIS, ce sera **long** et guère lisible. ça risque aussi de faire planter la session R , quin n'aime pas qu'on lui demande d'afficher des milliers d'objets dans une sessions graphique. 
+Nous pouvons afficher la géométrie de nos données, mais étant donné le grand nombre d'entités (~200k), et la finesse des mailles IRIS, ce sera **long** et guère lisible. ça risque aussi de faire planter la session R , qui n'aime pas qu'on lui demande d'afficher des milliers d'objets dans une sessions graphique. 
 
-Si vous avez pas mal de RAM (8Go) et que vous décidez d'afficher quand même l'objet, cela se fait en éxécutant la ligne suivante : 
+Si vous avez pas mal de RAM ( quelques Go) et que vous décidez d'afficher quand même l'objet, cela se fait (au bout d'un long moment) en éxécutant la ligne suivante : 
 
 ```{r plot1, cache=TRUE, eval=FALSE}
 plot(st_geometry(df_filtered))
@@ -145,6 +173,9 @@ Vous obtiendrez quelque chose comme ça :
 <center>
 ![](./IRIS_geometry_plot.png){height=70%}
 </center>
+
+
+
 
 
 ### Sélection d'une région
@@ -160,8 +191,8 @@ unique(df_filtered$nom_region)
 La fonction `unique()` retire les doublons d'une collection. C'est l'équivalent d'un `SELECT DISTINCT` en SQL. 
 
 On autrait pu écrire la même chose avec la syntaxe des pipes de `dplyr` : 
- 
- ```{r region2, cache=TRUE, evgal=FALSE}
+    
+```{r region2, cache=TRUE, evgal=FALSE}
 df_filtered$nom_region %>%  unique()
 ```
 
@@ -183,7 +214,7 @@ Les objets qui m'intéressent sont donc ceux dont l'attribut `nom_region` vaut :
 Pour sélectionner les données du Grand Est , il nous faut une condition de filtrage. 
  On va utiliser l'opérateur ensembliste `%in%` qui teste si un élément appartient à un ensemble de valeurs
 
-Voici un exemple d'utilisation
+Voici un exemple d'utilisation :
 ```{r infunc, cache=TRUE}
 "donald"  %in% c("riri", "fifi", "loulou")
 8  %in% c(2,4,6,8,10,12)
@@ -201,9 +232,16 @@ Dans notre cas pour ne conserver que les IRIS dont l'attribut `nom_region`  appa
 df_GE <-  df_filtered %>% filter(nom_region %in% c("GRAND EST", "Grand Est", "LORRAINE",
                                                    "ALSACE","CHAMPAGNE-ARDENNE" ))
 nrow(df_GE)
+rm(df_filtered)
 ```
 
-le dataframe `df_GE` contient ~16k entités spatiales, ce qui est plus raisonnable pour commencer à afficher les objets.
+le dataframe `df_GE` contient ~16k entités spatiales, ce qui est plus raisonnable pour commencer à afficher les objets. On va également retirer les géométries vides , à l'aide de `filter` et du prédicat `st_is_empty` qui teste si des géométries sont vide dans le dataset.
+
+```{r filterEmptyGeom, cache=TRUE, evgal=FALSE}
+df_GE <-  df_GE %>%  filter(!st_is_empty(geometry))
+nrow(df_GE)
+```
+
 
 
 ### Carte choroplète d'un facteur 
@@ -218,19 +256,13 @@ plot(st_geometry(df_GE))
 
 ```
 
-<center>
-![](./region_GE_geom.png){height=30%}
-</center>
 
 ```{r plotsf2, cache=TRUE, eval=FALSE}
 df_GE$nom_region <- droplevels(df_GE$nom_region) 
 plot(df_GE["nom_region"], lwd = 0.2, key.width = lcm(6))
 ```
 
-<center>
-![](./region_GE.png){height=30%}
- </center>
- 
+
  
 Pour comprendre les arguments supplémentaires de la fonction `plot()`  pour l'épaisseur des arêtes des polygones et la taille de la légende , reportez-vous à la documentation.
  
@@ -238,13 +270,13 @@ Pour comprendre les arguments supplémentaires de la fonction `plot()`  pour l'�
 
  À noter : l'attribut `nom_region` est de  type `factor`. (Pour connaître le type d'un attribut , utilisez la fonction `class()`).  R conserve les **valeurs que peuvent prendre  les facteurs **  (les modalités en français, en R ils sont  appelés  des `levels` ) . Ici nous avons un sous-ensemble du dataframe complet, dont l'attribut  `nom_region` appartient à 5 modalités : "GRAND EST", "Grand Est", "LORRAINE",  "ALSACE","CHAMPAGNE-ARDENNE" : nous l'avons filtré dans ce but. 
 
-Mais lorsqu'on observe les modalités de l'attribut `nom_region`, on constate qu'il a 41 modalités : 
+Mais lorsqu'on observe les modalités de l'attribut `nom_region`, on constate qu'il a toujours 41 modalités : 
 
 ```{r levels, cache=TRUE}
 levels(df_GE$nom_region)
 ```
  
-Or, lorsqu'on cherche à afficher l'attribut de type `factor` d'un objet spatial,  R et `sf` utilisent toutes les modalités pour tracer le cartouche de légende pour les couleurs. Pour éviter d'avoir un cartouche avec 41 valeurs de couleurs, (ils y a 41 modalités pour le facteur `nom_region` dans le dataframe complet) nous redéfinissons les modalités de l'attributs `nom_region` en ne conservant que les modalités présentes dans notre sous-ensemble, par la fonction `droplevels()`, dont on se sert pour reaffecter l'attribut `nom_region` du dataframe `df_GE`.     
+Or, lorsqu'on cherche à afficher l'attribut de type `factor` d'un objet spatial,  R et `sf` utilisent toutes les modalités pour tracer le cartouche de légende pour les couleurs. Pour éviter d'avoir un cartouche avec 41 valeurs de couleurs, nous avons redéfini  les modalités de l'attributs `nom_region` en ne conservant que les modalités présentes dans notre sous-ensemble, par la fonction `droplevels()`, dont on se sert pour reaffecter l'attribut `nom_region` du dataframe `df_GE`.     
  
  
 ## Système de coordonnées de référence
@@ -268,19 +300,19 @@ st_crs(df_GE)
 On constate que l'attribut CRS de l'objet spatial a bien été changé. 
 
 
+
+
 # Cartographie directe d'un attribut 
 
 ## Carte choroplète d'un facteur avec `ggplot`
 
-Voici comment obtenir une carte choroplète de l'attribut `nom_region` avec `ggplot2` 
+Voici comment obtenir une carte choroplète de l'attribut `nom_epci` avec `ggplot2` 
 
 
 ```{r ggplot1, cache=TRUE}
-df_GE$nom_region <-  as.character(df_GE$nom_region)
-
-p1 <-  ggplot()+
-  geom_sf(data=df_GE ,aes(fill=nom_region %>% as.character()), size=0.1)+
-  scale_fill_brewer(type="qual", name = "Valeur brute de \n l'attribut nom_region") +
+p1 <-  ggplot(df_GE)+
+  geom_sf(aes(fill=nom_region), size=0.1, alpha=0.2)+
+  scale_fill_discrete()+
   theme_void()
 p1
 ``` 
@@ -295,8 +327,7 @@ La syntaxe de ggplot est assez particulière , reportez-vous à l'excellent site
 
 
 
-Visiblement l'attribut `nom_region` est assez peu informatif et mal renseigné : tout est dans la région Grand Est, il y a des doublons et certaines valeurs sont le nom de régions datant d'avant la réforme territoriale.
-On va cartographier les IRIS en les colorant par département
+Visiblement l'attribut `nom_region` est assez peu informatif et mal renseigné : tout est dans la région Grand Est, on va plutôt cartographier les IRIS en les colorant par départements.
 
 Pour obtenir les départements , on examine les attributs du dataframe. Les deux premiers chiffres du  code IRIS correspondent au numéro de département. 
 Pour le récupérer, on convertit l'attribut `code_iris` en chaîne de caractère (avec la fonction`as.character()`), 
@@ -307,7 +338,6 @@ On stocke le résultat de cette chaîne de traitement  (notez à nouveau l'utili
 
 ```{r carto_code_reg, cache = TRUE}
 df_GE$code_departement <-  df_GE$code_iris %>%  as.character() %>%  substr(1,2)
-
 p3 <-  ggplot()+
   geom_sf(data=df_GE ,aes(fill=code_departement), size=0.1)+
   scale_fill_discrete(name = "Valeur brute de \n l'attribut code_departement ") +
@@ -320,7 +350,7 @@ Cela produit une carte un peu plus utile, même si ce n'est pas le but de ce tut
 
 ## Sous-ensembles des IRIS de Meuse
 
-Nous allons encore réduire la taille de notre échyantillon pour ne garder que les IRIS du département de la Meuse.
+Nous allons encore réduire la taille de notre échantillon pour ne garder que les IRIS du département de la Meuse.
 Le code de département de la Meuse est le 55.
 Nous filtre le dataframe du Grand-Est pour ne conserver que les IRIS dont l'attribut `code_departement` vaut 55. (Notez que l'attribut `code_departement` est de type `character`, d'où le test d'égalité avec la valeur `"55"`. )
 
@@ -342,8 +372,8 @@ Nous allons créer des cercles proportionnels à une quantité (l'attribut `tota
 
 Nous allons localiser les cercles proportionnels sur les centroïdes des polygônes des IRIS.
 Pour créer les centroïdes , on utilise la fonction `st_centroid()`
-Cette cfonction ne fonctionne pas si des polygonjs sont vides, ce qui est le cas de quelques polygon du dataframe `df_55`.
-On les enlèves par filtrage en utilisant le prédicat `st_is_empty()`
+Cette fonction ne fonctionne pas si des polygonjs sont vides, ce qui est le cas de quelques polygon du dataframe `df_55`.
+On les enlèves par filtrage en utilisant le prédicat `st_is_empty()` , ce qui a déjà été fait plus haut , lors du traitement du dataframe `df_GE` , mais je le remets ici.
 
 
 
@@ -354,8 +384,25 @@ plot(st_geometry(df_55), border="orange")
 plot(st_geometry(centroides), add=T, pch=4, cex= 0.1)
 ```
 
+La carte obtenue nous montre qu'il va être délicat de faire "tenir" de grands symboles pour les petits IRIS... 
+Essayons quand même, avec un attribut  numérique de quantité:  `residentiel_nombre_de_pdl` : 
 
 
+```{r cartoCircProp, cache=TRUE}
+plot(st_geometry(df_55), border="orange")
+plot(st_geometry(centroides), add=T, pch=20, cex= df_55$residentiel_nombre_de_pdl * 0.001)
+```
+
+Il nous faut trouver le bon facteur de taille à appliquer à l'attribut `cex` de la fonction `plot`. ggplot devrait mieux s'en sortir , au prix d'un argument difficilement explicable  : `sf_coordinates ` 
+
+```{r cartoCircProp2, cache=TRUE}
+p4 <-  ggplot()+
+  geom_sf(data=df_55 , size=0.1)+
+  geom_point(data=centroides, aes(size=residentiel_nombre_de_pdl, fill=residentiel_nombre_de_pdl, geometry=geometry ), stat = "sf_coordinates")+
+  labs(title = "Les IRIS de Meuse")+
+  theme_void()
+p4
+```
 
 
 
