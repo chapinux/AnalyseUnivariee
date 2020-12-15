@@ -427,28 +427,5 @@ legendCirclesSymbols(pos = "topleft", title.txt = "nombre d'arbres", title.cex =
 Le package `cartography` est un excellent package, que je recommande vivement.
 
 
-## indications pour le devoir : Relation avec le reseau routiers 
-
-
-On commence par charger les deux objets d'intérêt : le semis de points et le réseau routier.
-
-```{r rezo1, cache=TRUE}
-roads <-  st_read("./voie.shp")
-roads <-  st_transform(roads,2154)
-plot(roads$geometry)
-``` 
-
-
-Puis on calcule la distance des arbres au segment de route le plus proche:
-
-
-
-```{r rezo2, cache=TRUE}
-dmat <-  st_distance(arbres_intramuros, roads)
-head(dmat)
-``` 
-
-
-
 
 
