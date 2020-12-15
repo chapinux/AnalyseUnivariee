@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="M2 IGAST" />
+  <title>Analyse Univariée (avec R)</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="Cours_Univariee_files/reveal.js-3.3.0.1/css/reveal.css"/>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="Cours_Univariee_files/reveal.js-3.3.0.1/css/theme/sky.css" id="theme">
+
+
+  <!-- some tweaks to reveal css -->
+  <style type="text/css">
+    .reveal h1 { font-size: 2.0em; }
+    .reveal h2 { font-size: 1.5em;  }
+    .reveal h3 { font-size: 1.25em;	}
+    .reveal h4 { font-size: 1em;	}
+
+    .reveal .slides>section,
+    .reveal .slides>section>section {
+      padding: 0px 0px;
+    }
+
+
+
+    .reveal table {
+      border-width: 1px;
+      border-spacing: 2px;
+      border-style: dotted;
+      border-color: gray;
+      border-collapse: collapse;
+      font-size: 0.7em;
+    }
+
+    .reveal table th {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      font-weight: bold;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+    .reveal table td {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+
+  </style>
+
+    <style type="text/css">code{white-space: pre;}</style>
+
+    <link rel="stylesheet" href="style.css"/>
+
+<!-- Printing and PDF exports -->
+<script id="paper-css" type="application/dynamic-css">
+
+/* Default Print Stylesheet Template
+   by Rob Glazebrook of CSSnewbie.com
+   Last Updated: June 4, 2008
+
+   Feel free (nay, compelled) to edit, append, and
+   manipulate this file as you see fit. */
+
+
+@media print {
+
+	/* SECTION 1: Set default width, margin, float, and
+	   background. This prevents elements from extending
+	   beyond the edge of the printed page, and prevents
+	   unnecessary background images from printing */
+	html {
+		background: #fff;
+		width: auto;
+		height: auto;
+		overflow: visible;
+	}
+	body {
+		background: #fff;
+		font-size: 20pt;
+		width: auto;
+		height: auto;
+		border: 0;
+		margin: 0 5%;
+		padding: 0;
+		overflow: visible;
+		float: none !important;
+	}
+
+	/* SECTION 2: Remove any elements not needed in print.
+	   This would include navigation, ads, sidebars, etc. */
+	.nestedarrow,
+	.controls,
+	.fork-reveal,
+	.share-reveal,
+	.state-background,
+	.reveal .progress,
+	.reveal .backgrounds {
+		display: none !important;
+	}
+
+	/* SECTION 3: Set body font face, size, and color.
+	   Consider using a serif font for readability. */
+	body, p, td, li, div {
+		font-size: 20pt!important;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		color: #000;
+	}
+
+	/* SECTION 4: Set heading font face, sizes, and color.
+	   Differentiate your headings from your body text.
+	   Perhaps use a large sans-serif for distinction. */
+	h1,h2,h3,h4,h5,h6 {
+		color: #000!important;
+		height: auto;
+		line-height: normal;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		text-shadow: 0 0 0 #000 !important;
+		text-align: left;
+		letter-spacing: normal;
+	}
+	/* Need to reduce the size of the fonts for printing */
+	h1 { font-size: 28pt !important;  }
+	h2 { font-size: 24pt !important; }
+	h3 { font-size: 22pt !important; }
+	h4 { font-size: 22pt !important; font-variant: small-caps; }
+	h5 { font-size: 21pt !important; }
+	h6 { font-size: 20pt !important; font-style: italic; }
+
+	/* SECTION 5: Make hyperlinks more usable.
+	   Ensure links are underlined, and consider appending
+	   the URL to the end of the link for usability. */
+	a:link,
+	a:visited {
+		color: #000 !important;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	/*
+	.reveal a:link:after,
+	.reveal a:visited:after {
+		content: " (" attr(href) ") ";
+		color: #222 !important;
+		font-size: 90%;
+	}
+	*/
+
+
+	/* SECTION 6: more reveal.js specific additions by @skypanther */
+	ul, ol, div, p {
+		visibility: visible;
+		position: static;
+		width: auto;
+		height: auto;
+		display: block;
+		overflow: visible;
+		margin: 0;
+		text-align: left !important;
+	}
+	.reveal pre,
+	.reveal table {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	.reveal pre code {
+		padding: 20px;
+		border: 1px solid #ddd;
+	}
+	.reveal blockquote {
+		margin: 20px 0;
+	}
+	.reveal .slides {
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 0 !important;
+		zoom: 1 !important;
+
+		overflow: visible !important;
+		display: block !important;
+
+		text-align: left !important;
+		-webkit-perspective: none;
+		   -moz-perspective: none;
+		    -ms-perspective: none;
+		        perspective: none;
+
+		-webkit-perspective-origin: 50% 50%;
+		   -moz-perspective-origin: 50% 50%;
+		    -ms-perspective-origin: 50% 50%;
+		        perspective-origin: 50% 50%;
+	}
+	.reveal .slides section {
+		visibility: visible !important;
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+		display: block !important;
+		overflow: visible !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 60px 20px !important;
+		z-index: auto !important;
+
+		opacity: 1 !important;
+
+		page-break-after: always !important;
+
+		-webkit-transform-style: flat !important;
+		   -moz-transform-style: flat !important;
+		    -ms-transform-style: flat !important;
+		        transform-style: flat !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+
+		-webkit-transition: none !important;
+		   -moz-transition: none !important;
+		    -ms-transition: none !important;
+		        transition: none !important;
+	}
+	.reveal .slides section.stack {
+		padding: 0 !important;
+	}
+	.reveal section:last-of-type {
+		page-break-after: avoid !important;
+	}
+	.reveal section .fragment {
+		opacity: 1 !important;
+		visibility: visible !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+	}
+	.reveal section img {
+		display: block;
+		margin: 15px 0px;
+		background: rgba(255,255,255,1);
+		border: 1px solid #666;
+		box-shadow: none;
+	}
+
+	.reveal section small {
+		font-size: 0.8em;
+	}
+
+}  
+</script>
+
+
+<script id="pdf-css" type="application/dynamic-css">
+    
+/**
+ * This stylesheet is used to print reveal.js
+ * presentations to PDF.
+ *
+ * https://github.com/hakimel/reveal.js#pdf-export
+ */
+
+* {
+	-webkit-print-color-adjust: exact;
+}
+
+body {
+	margin: 0 auto !important;
+	border: 0;
+	padding: 0;
+	float: none !important;
+	overflow: visible;
+}
+
+html {
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+}
+
+/* Remove any elements not needed in print. */
+.nestedarrow,
+.reveal .controls,
+.reveal .progress,
+.reveal .playback,
+.reveal.overview,
+.fork-reveal,
+.share-reveal,
+.state-background {
+	display: none !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	text-shadow: 0 0 0 #000 !important;
+}
+
+.reveal pre code {
+	overflow: hidden !important;
+	font-family: Courier, 'Courier New', monospace !important;
+}
+
+ul, ol, div, p {
+	visibility: visible;
+	position: static;
+	width: auto;
+	height: auto;
+	display: block;
+	overflow: visible;
+	margin: auto;
+}
+.reveal {
+	width: auto !important;
+	height: auto !important;
+	overflow: hidden !important;
+}
+.reveal .slides {
+	position: static;
+	width: 100%;
+	height: auto;
+
+	left: auto;
+	top: auto;
+	margin: 0 !important;
+	padding: 0 !important;
+
+	overflow: visible;
+	display: block;
+
+	-webkit-perspective: none;
+	   -moz-perspective: none;
+	    -ms-perspective: none;
+	        perspective: none;
+
+	-webkit-perspective-origin: 50% 50%; /* there isn't a none/auto value but 50-50 is the default */
+	   -moz-perspective-origin: 50% 50%;
+	    -ms-perspective-origin: 50% 50%;
+	        perspective-origin: 50% 50%;
+}
+
+.reveal .slides section {
+	page-break-after: always !important;
+
+	visibility: visible !important;
+	position: relative !important;
+	display: block !important;
+	position: relative !important;
+
+	margin: 0 !important;
+	padding: 0 !important;
+	box-sizing: border-box !important;
+	min-height: 1px;
+
+	opacity: 1 !important;
+
+	-webkit-transform-style: flat !important;
+	   -moz-transform-style: flat !important;
+	    -ms-transform-style: flat !important;
+	        transform-style: flat !important;
+
+	-webkit-transform: none !important;
+	   -moz-transform: none !important;
+	    -ms-transform: none !important;
+	        transform: none !important;
+}
+
+.reveal section.stack {
+	margin: 0 !important;
+	padding: 0 !important;
+	page-break-after: avoid !important;
+	height: auto !important;
+	min-height: auto !important;
+}
+
+.reveal img {
+	box-shadow: none;
+}
+
+.reveal .roll {
+	overflow: visible;
+	line-height: 1em;
+}
+
+/* Slide backgrounds are placed inside of their slide when exporting to PDF */
+.reveal section .slide-background {
+	display: block !important;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: -1;
+}
+
+/* All elements should be above the slide-background */
+.reveal section>* {
+	position: relative;
+	z-index: 1;
+}
+
+/* Display slide speaker notes when 'showNotes' is enabled */
+.reveal .speaker-notes-pdf {
+	display: block;
+	width: 100%;
+	max-height: none;
+	left: auto;
+	top: auto;
+	z-index: 100;
+}
+
+/* Display slide numbers when 'slideNumber' is enabled */
+.reveal .slide-number-pdf {
+	display: block;
+	position: absolute;
+	font-size: 14px;
+}
+
+</script>
+
+
+<script>
+var style = document.createElement( 'style' );
+style.type = 'text/css';
+var style_script_id = window.location.search.match( /print-pdf/gi ) ? 'pdf-css' : 'paper-css';
+var style_script = document.getElementById(style_script_id).text;
+style.innerHTML = style_script;
+document.getElementsByTagName('head')[0].appendChild(style);
+</script>
+
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+    <h1 class="title">Analyse Univariée (avec R)</h1>
+    <h2 class="author">M2 IGAST</h2>
+    <h3 class="date">2020-2021</h3>
+</section>
+
+<section id="analyse-univariée" class="slide level2 flexbox vcenter">
+<h2>Analyse univariée</h2>
+<p><strong>Décrire</strong> et <strong>mesurer</strong> la <strong>répartition</strong> des valeurs que peut prendre une variable : sa <strong>distribution</strong> (<span class="math inline">\(\approx\)</span> &quot;histogramme en continu&quot;)</p>
+<p>Parfois certaines distributions ressemblent à des distributions bien connues : on parle de <strong>lois</strong></p>
+<p>e.g. loi normale/gaussienne, loi de Poisson, géométrique, exponentielle, ...</p>
+<div class="col2">
+<p><img src="Cours_Univariee_files/figure-revealjs/expledistrib-1.png" width="576" style="display: block; margin: auto;" /><img src="Cours_Univariee_files/figure-revealjs/expledistrib-2.png" width="576" style="display: block; margin: auto;" /></p>
+</div>
+</section>
+<section id="histogramme-dune-variable-suivant-une-loi-normale-mathscrn01" class="slide level2">
+<h2>Histogramme d'une variable suivant une loi normale <span class="math inline">\(\mathscr{N}(0,1)\)</span></h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">xx &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">value=</span><span class="kw">rnorm</span>(<span class="dv">2600</span>))
+plot1 &lt;-<span class="st"> </span><span class="kw">ggplot</span>(xx)<span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">x =</span> value),<span class="dt">bins =</span> <span class="dv">50</span>, <span class="dt">color=</span><span class="st">&quot;#aaaaaa&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;#44DD99&quot;</span> )<span class="op">+</span>
+<span class="st">        </span><span class="kw">theme_light</span>()
+plot1</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/gaussienne1-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section>
+<section id="histogramme-dune-distribution-réelle" class="slide level2">
+<h2>Histogramme d'une distribution réelle</h2>
+<p><img src="Cours_Univariee_files/figure-revealjs/arbres1-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><small> Données : arbres de la Ville de Paris [<a href="https://opendata.paris.fr/" class="uri">https://opendata.paris.fr/</a>]</small></p>
+</section>
+<section id="histogramme-dune-distribution-réelle-filtrée" class="slide level2">
+<h2>Histogramme d'une distribution réelle filtrée</h2>
+<p><img src="Cours_Univariee_files/figure-revealjs/arbres2-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><small> Données : arbres de la Ville de Paris [<a href="https://opendata.paris.fr/" class="uri">https://opendata.paris.fr/</a>]</small></p>
+</section>
+<section id="analyse-univariée-plan" class="slide level2">
+<h2>Analyse univariée : plan</h2>
+<p>Objectif : <strong>Décrire la répartition des valeurs</strong> d'une variable</p>
+<h3 id="mesures-de-tendance-centrale">Mesures de <strong>tendance centrale</strong></h3>
+<p>mode, moyenne, médiane</p>
+<h3 id="mesures-de-dispersion">Mesures de <strong>dispersion</strong></h3>
+<p>étendue, écart-type, variance, quantiles, coefficient de variation</p>
+<h3 id="mesures-de-forme">Mesures de <strong>forme</strong></h3>
+<p>symétrie (Skewness) et aplatissement (Kurtosis)</p>
+</section>
+<section><section id="statistique-descriptive-univariée-la-tendance" class="titleslide slide level1"><h1>Statistique descriptive univariée : la tendance</h1></section><section id="moyenne" class="slide level2">
+<h2>Moyenne</h2>
+<p><span class="math inline">\(\displaystyle \bar{x} = \frac{1}{n}\sum_{i=0}^{n} x_i\)</span></p>
+</section><section id="moyenne-pondérée" class="slide level2">
+<h2>Moyenne pondérée</h2>
+<p>Lors que les valeurs n'ont pas le même poids <br> <br> par exemple : poids = effectif de la valeur dans la population. <br></p>
+<p><span class="math inline">\(\displaystyle \bar{x} = \frac{1}{\sum_{i=0}^n pi}\sum_{i=0}^{n} p_i x_i\)</span></p>
+</section><section id="avantages-et-inconvénients-de-la-moyenne" class="slide level2">
+<h2>Avantages et inconvénients de la moyenne</h2>
+<h3 id="avantage">Avantage</h3>
+<p>Chaque valeur compte</p>
+<h3 id="inconvénients">Inconvénients</h3>
+<ul>
+<li>sensibilité aux valeurs extrèmes</li>
+<li>pas de signification sur les valeurs discrètes (e.g. 2.5 enfants par femme)</li>
+</ul>
+<p><span class="math inline">\(\rightarrow\)</span> exclure les outliers<br> <span class="math inline">\(\rightarrow\)</span> utiliser un autre estimateur<br> <span class="math inline">\(\rightarrow\)</span> étudier la distribution des valeurs (e.g. cas bimodal) et opérer une classification</p>
+</section><section id="autres-moyennes" class="slide level2">
+<h2>Autres Moyennes</h2>
+</section><section id="moyenne-geométrique" class="slide level2">
+<h2>Moyenne geométrique:</h2>
+<p><br></p>
+<p><span class="math inline">\(\displaystyle \bar{x} = \sqrt[n]{\prod _{i=0}^{n} x_i}\)</span></p>
+<p>Moins sensible à la présence de valeurs extrèmes</p>
+</section><section id="moyenne-quadratique-rms" class="slide level2">
+<h2>Moyenne quadratique (RMS)</h2>
+<p><br></p>
+<p><span class="math inline">\(\displaystyle \bar{x} = \sqrt{\frac{1}{n}\sum _{i=0}^{n} x_i^2}\)</span></p>
+</section><section id="cas-particulier-moyenne-glissante" class="slide level2">
+<h2>Cas particulier : Moyenne glissante</h2>
+<p>Moyenne calculée sur une fenètre de <span class="math inline">\(n\)</span> valeurs consécutives.</p>
+<p>e.g. on reçoit une mesure chaque seconde, très bruitée, et on désire afficher 10 minutes de signal lissé dans le temps</p>
+<p><span class="math inline">\(\rightarrow\)</span> on calcule pour chaque point du signal, la moyenne sur 10 valeurs consécutives (5 en avant , 5 en arrière)</p>
+</section><section id="le-mode" class="slide level2 flexbox vcenter">
+<h2>le Mode</h2>
+<p><strong>Mode</strong> : valeur la plus fréquente (effectif max.) de la série de valeurs que prend une variable. <br> <br> <span style="color:red">⚠</span> si variable quantitative continue : faire une classification . Dans ce cas, le mode est la moyenne des valeurs min et max des bornes de la classe de plus grand effectif.</p>
+</section><section id="avantages-et-inconvénients-du-mode" class="slide level2">
+<h2>Avantages et inconvénients du mode</h2>
+<h3 id="avantages">Avantages</h3>
+<p>Peu sensible aux valeurs extrêmes (moins sensible que la moyenne)</p>
+<p>Signification concrète : la situation la plus fréquente</p>
+<h3 id="inconvénients-1">Inconvénients</h3>
+<p>Ne dépends pas de toutes les observations : la modification d'une seule valeur n’entraîne pas une modification du mode</p>
+</section><section id="la-médiane" class="slide level2">
+<h2>la Médiane</h2>
+<p><strong>Médiane</strong> : valeur qui partage une série de valeurs en d<strong>eux sous-ensembles d’égal effectif</strong></p>
+<p>Comme en géométrie, la médiane est la valeur de la variable qui est la plus proche de toutes les autres.</p>
+</section><section id="etapes-de-calcul" class="slide level2">
+<h2>Etapes de calcul</h2>
+<p>Ordonner les valeurs selon un ordre croissant</p>
+<p>Calculer le rang <span class="math inline">\(i=\frac{n+1}{2}\)</span></p>
+<p>si <span class="math inline">\(n\)</span> impair, la valeur médiane existe dans la série statistique</p>
+<p>si <span class="math inline">\(n\)</span> pair, la valeur médiane est entre deux valeurs et est égale à la moyenne de ces deux valeurs</p>
+</section><section id="avantages-et-inconvénients-de-la-médiane" class="slide level2">
+<h2>Avantages et inconvénients de la médiane</h2>
+<h3 id="avantages-1">Avantages</h3>
+<p>Plus pertinente que la moyenne</p>
+<p>Peu sensible aux valeurs extrêmes</p>
+<p>A une signification concrète : divise en deux la distribution : un individu sur deux a une valeur inférieure ou supérieure à celle-ci</p>
+<h3 id="inconvénient">Inconvénient</h3>
+<p>Ne dépend pas de toutes les observations : la modification d'une seule valeur n’entraine pas une modification de la médiane</p>
+</section><section id="quelle-mesure-choisir" class="slide level2">
+<h2>Quelle mesure choisir ?</h2>
+<p>Tout dépend de la distribution !</p>
+<p><span class="math inline">\(\rightarrow\)</span> <strong>Toujours</strong> afficher l'histogramme ou la distribution de densité <br><br></p>
+<p>Le <strong>mode</strong> est privilégié pour les valeurs <strong>nominales</strong> et si on désire considérer «le cas le plus fréquent»</p>
+<p>Distribution sans longue traîne ? <br> <span class="math inline">\(\rightarrow\)</span> moyenne et médiane</p>
+<p>Plusieurs modes dans la distribution ?<br> <span class="math inline">\(\rightarrow\)</span> classification puis médiane / moyenne par classe</p>
+</section><section id="distribution-bimodale" class="slide level2">
+<h2>Distribution bimodale</h2>
+<p><img src="Cours_Univariee_files/figure-revealjs/bimod1-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>Que choisir : moyenne ou médiane ?</p>
+</section><section id="distribution-unimodale-symétrique" class="slide level2">
+<h2>Distribution unimodale symétrique</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">xx &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">value=</span><span class="kw">rnorm</span>(<span class="dv">2900</span>,<span class="dt">mean =</span> <span class="dv">5</span>, <span class="dt">sd =</span> <span class="dv">1</span>))
+plot1 &lt;-<span class="st"> </span><span class="kw">ggplot</span>(xx)<span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> value),<span class="dt">stat =</span> <span class="st">&quot;density&quot;</span>, <span class="dt">color=</span><span class="st">&quot;#44DD99&quot;</span>, <span class="dt">lwd=</span> <span class="fl">1.3</span>)<span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(xx<span class="op">$</span>value), <span class="dt">color=</span><span class="st">&quot;red&quot;</span>)<span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">median</span>(xx<span class="op">$</span>value) <span class="op">+</span><span class="st"> </span><span class="fl">0.02</span>,<span class="dt">color=</span><span class="st">&quot;blue&quot;</span>)<span class="op">+</span>
+<span class="st">        </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x=</span><span class="kw">c</span>(<span class="fl">4.5</span>,<span class="fl">5.5</span>), <span class="dt">y=</span><span class="kw">c</span>(<span class="fl">0.2</span>,<span class="fl">0.2</span>), <span class="dt">colour=</span><span class="kw">c</span>(<span class="st">&quot;red&quot;</span>,<span class="st">&quot;blue&quot;</span>),<span class="dt">label=</span><span class="kw">c</span>(<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;median&quot;</span>))<span class="op">+</span>
+<span class="st">        </span><span class="kw">theme_light</span>()
+plot1</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/gaussienne2-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="histogramme-et-distribution-en-r" class="slide level2">
+<h2>Histogramme et distribution en R</h2>
+<p>la fonction <code>hist</code> affiche un histogramme d'un vecteur <strong>numerique</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st">  </span><span class="kw">rnorm</span>(<span class="dv">2500</span>) <span class="co">#init</span>
+<span class="kw">hist</span>(x)</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/histoR-1.png" width="576" style="display: block; margin: auto;" /></p>
+</section><section id="histogramme-et-distribution-en-r-1" class="slide level2">
+<h2>Histogramme et distribution en R</h2>
+<p>un histogramme n'a pas de sens pour une variable <strong>qualitative</strong>.</p>
+<p>On peut utiliser <code>barplot</code>,<span style="color:red; font-size:1;">⚠</span> mais ce n'est plus une distribution !</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st">  </span><span class="kw">sample</span>(month.name, <span class="dv">2500</span>, <span class="dt">replace=</span>T)
+tx &lt;-<span class="st"> </span><span class="kw">table</span>(x)
+<span class="kw">barplot</span>(tx , <span class="dt">las=</span><span class="dv">2</span>)</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/histoR2-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section></section>
+<section><section id="statistique-descriptive-univariée-la-dispersion" class="titleslide slide level1"><h1>Statistique descriptive univariée : la dispersion</h1></section><section id="la-dispersion-statistique" class="slide level2">
+<h2>La <strong>dispersion</strong> statistique</h2>
+<p>Tendance des valeurs d'une variable à se disperser autour des valeurs des tendances centrales.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mydataset &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">X=</span><span class="kw">rnorm</span>(<span class="dv">900</span>), <span class="dt">Y=</span><span class="kw">rnorm</span>(<span class="dv">900</span>))
+plot1 &lt;-<span class="st"> </span><span class="kw">ggplot</span>(mydataset)<span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x=</span>X, <span class="dt">y=</span>Y), <span class="dt">fill=</span><span class="st">&quot;#44DD99&quot;</span>, <span class="dt">color=</span><span class="st">&quot;#666666&quot;</span>, <span class="dt">shape=</span><span class="dv">21</span>)<span class="op">+</span>
+<span class="st">        </span><span class="kw">coord_equal</span>()<span class="op">+</span><span class="kw">theme_light</span>()
+plot1</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/gaussienne2D-1.png" width="960" style="display: block; margin: auto;" /></p>
+</section><section id="variance-et-écart-type" class="slide level2">
+<h2>Variance et Écart-type</h2>
+<p>La <strong>variance</strong> est la somme des écarts carrés à la moyenne rapporté à l'effectif</p>
+<p><span class="math inline">\(\displaystyle var_X= \frac{1}{n}\sum_{i=1}^{n}(x_i -\bar{x})^2\)</span></p>
+<p>Avec : * <span class="math inline">\(X\)</span> une variable * <span class="math inline">\(x_i\)</span> les valeurs de la variables * <span class="math inline">\(\bar{x}\)</span> la moyenne de <span class="math inline">\(X\)</span> * <span class="math inline">\(n\)</span> l'effectif</p>
+<p><span class="math inline">\(\sigma_X = \sqrt{var_X}\)</span> : l'<strong>écart type</strong> est la racine carrée de la variance</p>
+</section><section id="variance-et-écart-type-1" class="slide level2">
+<h2>Variance et Écart-type</h2>
+<p>Variance et écart-type rendent compte de la <strong>dispersion</strong> de la variable autour de sa moyenne.</p>
+<p>Ils sont <strong>sensibles</strong> aux valeurs extrèmes et toujours <strong>positifs</strong>.</p>
+<p>Si <span class="math inline">\(var_X = 0\)</span> ou <span class="math inline">\(\sigma_X = 0\)</span> , alors <span class="math inline">\(X\)</span> est <strong>constante</strong>.</p>
+<p>Un écart-type faible indique que les valeurs sont réparties de façon <strong>homogène</strong> autour de la moyenne.</p>
+</section><section id="précaution" class="slide level2 flexbox vcenter">
+<h2>Précaution</h2>
+<p><span style="color:red; font-size:1.5em;">⚠</span>Variance et écart type n'ont d'intérêt que pour qualifier des distributions <strong>unimodales</strong>, et (à peu près) <strong>symétriques</strong></p>
+<p>(i.e. proche de la Gaussienne)</p>
+</section><section id="lorsque-xsim-mathscrnmusigma" class="slide level2">
+<h2>Lorsque <span class="math inline">\(X\sim \mathscr{N}(\mu,\sigma)\)</span></h2>
+<p><img src="Cours_Univariee_files/figure-revealjs/stddev1-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><br> <span class="math inline">\([-\sigma;\sigma] \approx \frac{2}{3}\)</span> de l'effectif <br> <br> <span class="math inline">\([-2\sigma;2\sigma] \approx\)</span> 95% de l'effectif</p>
+</section><section id="quantiles" class="slide level2">
+<h2>Quantiles</h2>
+<p>La <strong>médiane</strong> sépare une population en <strong>deux</strong> classes d'égal effectif selon la valeur d'une variable (quantitative).</p>
+<p>Les <strong>quantiles</strong> séparent une population en <strong><span class="math inline">\(n\)</span></strong> classes d'égal effectif</p>
+<p>Les <strong>quartiles</strong> d'une population selon une variable <span class="math inline">\(X\)</span> sont trois valeurs, <span class="math inline">\(Q_1,Q_2,Q_3\)</span> qui séparent la population en <strong>quatre</strong> classes d'égal effectif. <small></p>
+<ul>
+<li>25% des valeurs de <span class="math inline">\(X\)</span> sont strictement inférieures à <span class="math inline">\(Q_1\)</span></li>
+<li>50% des valeurs de <span class="math inline">\(X\)</span> sont strictement inférieures à <span class="math inline">\(Q_2\)</span> (médiane)</li>
+<li>75% des valeurs de <span class="math inline">\(X\)</span> sont strictement inférieures à <span class="math inline">\(Q_3\)</span></li>
+</ul>
+<p></small></p>
+</section><section id="déciles" class="slide level2">
+<h2>Déciles</h2>
+<p>Les déciles sont les <strong>9</strong> quantiles <span class="math inline">\(Q_1,Q_2,\dots,Q_9\)</span> qui séparent une population selon la valeur d'une variable quantitative en <strong>10</strong> classes d'égal effectif.</p>
+</section><section id="ecarts-inter-quartiles-et-inter-déciles" class="slide level2">
+<h2>Ecarts inter-quartiles et inter-déciles</h2>
+<p>Deux mesures de la <strong>dispersion</strong> d'une distribution :</p>
+<p><br><br> <strong>Écart inter-quartile</strong>: <span class="math inline">\(Q_3-Q_1\)</span> , capture 50% des valeurs de la population les plus proches de la médiane</p>
+<p><br><br> <strong>Écart inter-déciile</strong>: <span class="math inline">\(Q_9-Q_1\)</span> , capture 80% des valeurs de la population les plus proches de la médiane</p>
+</section><section id="les-boîtes-à-moustaches-boxplots" class="slide level2">
+<h2>Les boîtes à moustaches (boxplots)</h2>
+<p>représentation courante de la dispersion d'une variable à l'aide de <strong>quartiles</strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot1 &lt;-<span class="st"> </span><span class="kw">ggplot</span>(iris)<span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="kw">aes</span>(<span class="dt">y=</span>Sepal.Width,<span class="dt">x=</span> Species) ) <span class="op">+</span><span class="st"> </span><span class="kw">coord_flip</span>()
+plot1</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/boxplot1-1.png" width="576" style="display: block; margin: auto;" /></p>
+</section><section id="interprétation-des-boxplots" class="slide level2">
+<h2>Interprétation des boxplots</h2>
+<ul>
+<li>La marque centrale de la boîte est la médiane</li>
+<li>Les bords de la boîte sont les quartiles <span class="math inline">\(Q_1\)</span> et <span class="math inline">\(Q_3\)</span></li>
+<li>Les extrémités des moustaches vont jusqu'à la plus grande (resp. la plus petite ) valeur inférieure (resp. supérieure) à 1.5 fois l’écart interquartile</li>
+<li>Les valeurs qui dépassent les moustaches sont affichées sous formes de points</li>
+</ul>
+<p><img src="Cours_Univariee_files/figure-revealjs/boxplot2-1.png" width="576" style="display: block; margin: auto;" /></p>
+</section><section id="avantages-et-inconvénient-des-quantiles" class="slide level2">
+<h2>Avantages et inconvénient des quantiles</h2>
+<h3 id="avantages-2">Avantages</h3>
+<p>Peu sensibles aux distributions aplaties et aux valeurs extrèmes</p>
+<p>L'écart inter-quantile est plus robuste que l'écart-type</p>
+<h3 id="inconvénients-2">Inconvénients</h3>
+<p>Parfois délicat pour les variables quantitatives discrètes</p>
+<p>Les écarts inter-quantiles négligent l'influence des valeurs extrèmes sur la distribution</p>
+</section><section id="le-coefficient-de-variation" class="slide level2">
+<h2>Le coefficient de variation</h2>
+<p>Le <strong>coefficient de variation</strong> (<span class="math inline">\(CV\)</span>) est une autre mesure de dispersion.</p>
+<p>C'est le ratio entre l'écart-type <span class="math inline">\(\sigma_x\)</span> et la moyenne <span class="math inline">\(\bar{x}\)</span> d'une variable quantitative <span class="math inline">\(X\)</span>.</p>
+<p><span class="math inline">\(\displaystyle CV(X)=\frac{\sigma_x}{\bar{x}}\)</span></p>
+<p>Plus il est important , plus la dispersion est grande.</p>
+<p>Plus il est proche de 0, plus les données sont homogènes.</p>
+<p>Il souffre des mêmes inconvénients que la moyenne et l'écart-type : sensibilité aux valeurs extrèmes.</p>
+</section><section id="comparaison-de-dispersion-de-deux-distributions-de-valeurs." class="slide level2">
+<h2>Comparaison de dispersion de deux distributions de valeurs.</h2>
+<p>Exemple : deux communes versent des aides aux entreprises locales.</p>
+<p>Commune A : moyenne = 390 euros, <span class="math inline">\(\sigma\)</span> = 30 euros</p>
+<p>Commune B : moyenne = 152 euros, <span class="math inline">\(\sigma\)</span> = 8 euros</p>
+<p>Pour quelle commune les aides sont les plus homogènes?</p>
+<p><br><br> <small>On pourrait aussi comparer des distribution de valeurs exprimées dans des unités différentes !</small></p>
+</section><section id="mauvaise-comparaison-visuelle-de-deux-distributions" class="slide level2">
+<h2><strong>(Mauvaise)</strong> Comparaison visuelle de deux distributions</h2>
+<p><span style="font-size:60%; margin-top:-50px">Pour échantilloner dans une loi normale : fonction <code>rnorm</code></span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">A &lt;-<span class="st">  </span><span class="kw">rnorm</span>(<span class="dt">n =</span> <span class="dv">10000</span>, <span class="dt">mean =</span> <span class="dv">390</span>, <span class="dt">sd =</span> <span class="dv">30</span>)
+B &lt;-<span class="st">  </span><span class="kw">rnorm</span>(<span class="dt">n =</span> <span class="dv">10000</span>, <span class="dt">mean =</span> <span class="dv">152</span>, <span class="dt">sd =</span> <span class="dv">8</span>)
+<span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)) <span class="co">#2 graphes en colonnes</span>
+<span class="kw">hist</span>(A, <span class="dt">probability =</span> T)
+<span class="kw">lines</span>(<span class="kw">density</span>(A), <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)
+<span class="kw">hist</span>(B, <span class="dt">probability =</span> T)
+<span class="kw">lines</span>(<span class="kw">density</span>(B), <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/compDistNorm1-1.png" width="576" style="display: block; margin: auto;" /> Qu'est ce qui ne va pas ?</p>
+</section><section id="comparaison-visuelle-de-dispersion-de-deux-distributions" class="slide level2">
+<h2>Comparaison visuelle de dispersion de deux distributions</h2>
+<p>Il faut une <strong>échelle commune</strong> !</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">A &lt;-<span class="st">  </span><span class="kw">rnorm</span>(<span class="dt">n =</span> <span class="dv">10000</span>, <span class="dt">mean =</span> <span class="dv">390</span>, <span class="dt">sd =</span> <span class="dv">30</span>)
+B &lt;-<span class="st">  </span><span class="kw">rnorm</span>(<span class="dt">n =</span> <span class="dv">10000</span>, <span class="dt">mean =</span> <span class="dv">152</span>, <span class="dt">sd =</span> <span class="dv">8</span>)
+<span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))
+<span class="kw">hist</span>(A, <span class="dt">probability =</span> T, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">50</span>,<span class="dv">600</span>), <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="fl">0.05</span>))
+<span class="kw">lines</span>(<span class="kw">density</span>(A), <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)
+<span class="kw">hist</span>(B, <span class="dt">probability =</span> T,<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">50</span>,<span class="dv">600</span>), <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="fl">0.05</span>))
+<span class="kw">lines</span>(<span class="kw">density</span>(B), <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/compDistNorm2-1.png" width="576" style="display: block; margin: auto;" /></p>
+</section></section>
+<section><section id="statistique-descriptive-univariée-la-forme" class="titleslide slide level1"><h1>Statistique descriptive univariée : la forme</h1></section><section id="asymétrie-des-distributions." class="slide level2">
+<h2><strong>Asymétrie</strong> des distributions.</h2>
+<p><img src="Cours_Univariee_files/figure-revealjs/asym1-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="les-coefficients-de-pearson" class="slide level2">
+<h2>les Coefficients de Pearson</h2>
+<p><br><br></p>
+<p>Deux moyens simples d'estimer l'asymétrie <br><br> <span class="math inline">\(\displaystyle C_1 = \frac{\bar{x} - mode(X)}{\sigma_x}\)</span> <br><br> <span class="math inline">\(\displaystyle C_2 = \frac{3(\bar{x} - mediane(X))}{\sigma_x}\)</span></p>
+</section><section id="interprétation-des-coefficients-dasymétrie" class="slide level2">
+<h2>Interprétation des coefficients d'asymétrie</h2>
+<p><br><br></p>
+<ul>
+<li>si le coefficient <strong>nul</strong>, la distribution est <strong>symétrique</strong></li>
+<li>si le coefficient est <strong>négatif</strong>, la distribution est <strong>déformée à gauche</strong> de la médiane (sur-représentation de valeurs faibles, à gauche)</li>
+<li>si le coefficient est <strong>positif</strong>, la distribution est <strong>déformée à droite</strong> de la médiane (sur-représentation de valeurs fortes, à droite)</li>
+</ul>
+</section><section id="le-coefficient-de-fischer" class="slide level2">
+<h2>Le coefficient de Fischer</h2>
+<p><br><br></p>
+<p>Ce coefficient est le moment d'ordre 3 de la variable <span class="math inline">\(X\)</span> ( de moyenne <span class="math inline">\(\mu\)</span> et d'écart-type <span class="math inline">\(\sigma\)</span>) <strong>centrée réduite</strong></p>
+<p><span class="math inline">\(\displaystyle skewness&#39;=\mathbb{E}\bigg[\bigg(\frac{X-\mu}{\sigma}\bigg)^3\bigg]=\frac{\sum_{i=0}^{n} (x_i - \bar{x})^3}{n\sigma^3}\)</span></p>
+</section><section id="laplatissement-des-distributions-kurtosis" class="slide level2">
+<h2>L'aplatissement des distributions (kurtosis)</h2>
+<p><img src="Cours_Univariee_files/figure-revealjs/kurtos1-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Courbe piquée: Peu de variation, distribution relativement homogène, beaucoup de valeurs égales ou proches de la moyenne.</p>
+<p>Courbe applatie: Variations importantes, distribution relativement hétérogène, beaucoup de valeurs s'éloignent de la moyenne.</p>
+</section><section id="coefficient-dapplatissement-kurtosis" class="slide level2">
+<h2>Coefficient d'applatissement : kurtosis</h2>
+<p>Coefficient non normalisé :</p>
+<p><span class="math inline">\(\displaystyle K=\frac{\sum_{i=1}^{n}(x_i -\bar{x})^4}{n\sigma^4}\)</span></p>
+<p>Si la distribution est normale , <span class="math inline">\(K= 3\)</span></p>
+<p>Si <span class="math inline">\(K&gt;3\)</span>, la distribution est <strong>plus applatie</strong></p>
+<p>Si <span class="math inline">\(K&lt;3\)</span>, la distribution est <strong>moins applatie</strong></p>
+<p>On normalise parfois en considérant <span class="math inline">\(K&#39;=K-3\)</span> (excès d'applatissement)</p>
+</section></section>
+<section><section id="représentation-dune-distribution-et-échelle-de-couleurs" class="titleslide slide level1"><h1>Représentation d'une distribution et Échelle de couleurs</h1></section><section id="distribution-et-échelle-de-couleurs" class="slide level2">
+<h2>Distribution et Échelle de couleurs</h2>
+<p>Pour une variable quanti. continue qu'on souhaite colorer, il n'est pas toujours possible de graduer une échelle de couleur continue. <br> Il faut (souvent) classer les valeurs en catégories. Le <strong>nombre</strong> de classes et les <strong>méthodes</strong> de classification varient.</p>
+<p>En général</p>
+<ul>
+<li>5,7 ou 9 classes :</li>
+<li><span class="math inline">\(&lt;5\)</span> trop peu de détails<br />
+</li>
+<li><span class="math inline">\(&gt;9\)</span> difficile de distinguer les classes proches</li>
+</ul>
+</section><section id="distribution-et-échelle-de-couleurs-1" class="slide level2">
+<h2>Distribution et Échelle de couleurs</h2>
+<p>Méthodes de classifications de Qgis</p>
+<ul>
+<li>Ruptures Naturelles (Jenks) : Minimisation des variances intra-classe et maximisation des variances inter-classe</li>
+<li>Effectifs égaux (quantiles)</li>
+<li>Intervalles égaux</li>
+<li>Ecart-type : intervales de 1 ou 0.5 <span class="math inline">\(\sigma\)</span></li>
+<li>Jolies ruptures : intervalle égaux &quot;décalés&quot; pour faire joli : nombre ronds, puissances de 10, ...</li>
+</ul>
+</section><section id="exemple-avec-la-surface-des-quartiers-de-paris" class="slide level2">
+<h2>Exemple avec la surface des quartiers de Paris</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">quartiers &lt;-<span class="st">  </span><span class="kw">st_read</span>(<span class="st">&quot;quartier_paris.shp&quot;</span>)
+<span class="kw">plot</span>(quartiers<span class="op">$</span>geometry)</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/quartierparis2-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="allure-de-la-distribution" class="slide level2">
+<h2>Allure de la distribution</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(quartiers<span class="op">$</span>surface,<span class="dt">breaks =</span> <span class="dv">15</span>)</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/quartierparis3-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="affichage-par-défaut" class="slide level2">
+<h2>Affichage par défaut :</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>))
+<span class="kw">plot</span>(quartiers[<span class="st">&quot;surface&quot;</span>])</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/quartierparis4-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>par defaut la fonction <code>plot</code> de sf utilise la méthode &quot;pretty&quot; avec 10 ruptures (<span class="math inline">\(9\pm1\)</span> classes) =&gt; ce sont des intervalles égaux.</p>
+</section><section id="jenks-à-5-7-et-9-classes" class="slide level2">
+<h2>Jenks à 5 , 7 et 9 classes</h2>
+<div class="col3">
+<p><img src="Cours_Univariee_files/figure-revealjs/quartierparis6-1.png" width="1152" style="display: block; margin: auto;" /><img src="Cours_Univariee_files/figure-revealjs/quartierparis6-2.png" width="1152" style="display: block; margin: auto;" /><img src="Cours_Univariee_files/figure-revealjs/quartierparis6-3.png" width="1152" style="display: block; margin: auto;" /></p>
+</div>
+</section><section id="jenks-à-5-7-et-9-classes-1" class="slide level2">
+<h2>Jenks à 5 , 7 et 9 classes</h2>
+<p>Code R correspondant :</p>
+<div class="col3">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>))
+<span class="kw">plot</span>(quartiers[<span class="st">&quot;surface&quot;</span>], <span class="dt">breaks=</span><span class="st">&quot;jenks&quot;</span>, <span class="dt">nbreaks =</span> <span class="dv">5</span>, <span class="dt">main =</span> <span class="st">&quot;5 breaks&quot;</span>)
+<span class="kw">plot</span>(quartiers[<span class="st">&quot;surface&quot;</span>], <span class="dt">breaks=</span><span class="st">&quot;jenks&quot;</span>, <span class="dt">nbreaks =</span> <span class="dv">7</span>, <span class="dt">main=</span><span class="st">&quot;7 breaks&quot;</span>)
+<span class="kw">plot</span>(quartiers[<span class="st">&quot;surface&quot;</span>], <span class="dt">breaks=</span><span class="st">&quot;jenks&quot;</span>, <span class="dt">nbreaks =</span> <span class="dv">9</span>, <span class="dt">main=</span> <span class="st">&quot;9 breaks&quot;</span>)</code></pre></div>
+</div>
+</section><section id="effectifs-égaux" class="slide level2">
+<h2>Effectifs égaux</h2>
+<p><img src="Cours_Univariee_files/figure-revealjs/quartierparis7-1.png" width="1152" style="display: block; margin: auto;" /></p>
+</section><section id="intervalles-égaux-7" class="slide level2">
+<h2>Intervalles égaux (7)</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>))
+<span class="kw">plot</span>(quartiers[<span class="st">&quot;surface&quot;</span>], <span class="dt">breaks=</span><span class="st">&quot;equal&quot;</span>, <span class="dt">nbreaks =</span> <span class="dv">7</span>, <span class="dt">main =</span> <span class="st">&quot;Intervalles égaux&quot;</span>)</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/quartierparis8-1.png" width="1152" style="display: block; margin: auto;" /></p>
+</section><section id="ecart-types" class="slide level2">
+<h2>Ecart types</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>))
+<span class="kw">plot</span>(quartiers[<span class="st">&quot;surface&quot;</span>], <span class="dt">breaks=</span><span class="st">&quot;sd&quot;</span>,<span class="dt">main =</span> <span class="st">&quot;Écart-type&quot;</span>)</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/quartierparis9-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p><span class="math inline">\(\approx\)</span> méthode des jolies ruptures sur variable centrée réduite</p>
+</section><section id="guides-de-choix-de-la-méthode-de-classification" class="slide level2">
+<h2>Guides de choix de la méthode de classification</h2>
+<p>Pour les classification manuelles : <br><br></p>
+<ul>
+<li>les classes <strong>doivent</strong> contenir toutes les valeurs, être sans recouvrement, contigües et distinctes.</li>
+<li>Procéder par essai-erreur</li>
+<li><p>attention aux décimales et aux extrémités <br><br></p></li>
+<li>si distribution uniforme <span class="math inline">\(\rightarrow\)</span> Intervalles égaux</li>
+<li>si distribution asymétrique <span class="math inline">\(\rightarrow\)</span> Effectifs égaux, Jenks , progression géométrique (rare).</li>
+<li><p>si distribution symétrique <span class="math inline">\(\rightarrow\)</span> Écart-type, intervalle égaux</p></li>
+</ul>
+</section><section id="autres-classifications" class="slide level2">
+<h2>Autres classifications</h2>
+<p>consultez la doc de la fonction <code>classInt</code> du package du même nom</p>
+</section><section id="transformations-des-données" class="slide level2">
+<h2>Transformations des données</h2>
+<ul>
+<li><p><span class="math inline">\(x \mapsto log(x)\)</span> pour une distribution asymétrique à droite ou <span class="math inline">\(x \mapsto \sqrt x\)</span> si moins asymétrique</p></li>
+<li><p><span class="math inline">\(x \mapsto x^2\)</span> pour une distribution asymétrique à gauche ou <span class="math inline">\(x \mapsto x^3\)</span> si très asymétrique</p></li>
+</ul>
+<p>(<span style="color:red">⚠</span> toujours vérifier l'allure de la distribution transformée)</p>
+</section><section id="variables-centrées-réduites" class="slide level2">
+<h2>Variables centrées-réduites</h2>
+<p><span style="color:red">⚠ </span> En principe, uniquement lorsque la distribution d'une variable est proche d'une gaussienne <span style="color:red">⚠</span></p>
+<p>Centrer : soustraire la moyenne</p>
+<p>Réduire : diviser par l'écart-type</p>
+<p>une variable <strong>centrée réduite</strong> est exprimée en «écarts-types à la moyenne»</p>
+<p><span class="math inline">\(\rightarrow\)</span> permet de repérer les valeurs extrèmes (<span class="math inline">\(&lt;2\sigma\)</span> ou <span class="math inline">\(&gt;2\sigma\)</span>)</p>
+<p><span class="math inline">\(\rightarrow\)</span> utile pour comparer des individus selon un grand nombre de variables (tableaux de synthèse)</p>
+</section></section>
+<section><section id="visualiser-une-distribution" class="titleslide slide level1"><h1>Visualiser une distribution</h1></section><section id="histogramme-code-r-ggplot" class="slide level2">
+<h2>Histogramme : Code R + ggplot</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(palmerpenguins)
+<span class="kw">data</span>(<span class="dt">package =</span> <span class="st">&#39;palmerpenguins&#39;</span>)
+mydata &lt;-<span class="st">  </span>penguins
+histo_mass &lt;-<span class="st"> </span><span class="kw">ggplot</span>(mydata)<span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">x=</span>body_mass_g), <span class="dt">fill=</span><span class="st">&quot;darkorchid4&quot;</span>, <span class="dt">color=</span><span class="st">&quot;darkgray&quot;</span>, <span class="dt">bins=</span><span class="dv">50</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Penguins Body Mass&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Histogram&quot;</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Count&quot;</span>)<span class="op">+</span><span class="kw">theme_light</span>()
+histo_mass</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/histo_code_1-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="distribution-code-r-ggplot" class="slide level2">
+<h2>Distribution : Code R + ggplot</h2>
+<p><span style="color:red">⚠</span> ce n'est pas exactement une probabilité, mais une <strong>densité</strong> de probabilité. Pour obtenir la probabilité , il faut intégrer sur un petit <span class="math inline">\(dx\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(palmerpenguins)
+<span class="kw">data</span>(<span class="dt">package =</span> <span class="st">&#39;palmerpenguins&#39;</span>)
+mydata &lt;-<span class="st">  </span>penguins
+distrib_mass &lt;-<span class="st"> </span><span class="kw">ggplot</span>(mydata)<span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_density</span>(<span class="kw">aes</span>(<span class="dt">x=</span>body_mass_g), <span class="dt">fill=</span><span class="st">&quot;darkorchid4&quot;</span>, <span class="dt">color=</span><span class="st">&quot;darkgray&quot;</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="kw">aes</span>(<span class="dt">xintercept=</span><span class="kw">mean</span>(body_mass_g, <span class="dt">na.rm =</span> T)), <span class="dt">color=</span><span class="st">&quot;black&quot;</span>, <span class="dt">size=</span><span class="fl">0.4</span>, <span class="dt">linetype=</span><span class="st">&quot;dashed&quot;</span> )<span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Penguins Body Mass&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Probability density and mean&quot;</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Count&quot;</span>)<span class="op">+</span><span class="kw">theme_light</span>()
+distrib_mass</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/distrib_code_1-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="boxplot-code-r-ggplot" class="slide level2">
+<h2>BoxPlot : Code R + ggplot</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(palmerpenguins)
+<span class="kw">data</span>(<span class="dt">package =</span> <span class="st">&#39;palmerpenguins&#39;</span>)
+mydata &lt;-<span class="st">  </span>penguins
+boxplot_mass &lt;-<span class="st"> </span><span class="kw">ggplot</span>(mydata)<span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span>body_mass_g, <span class="dt">y=</span>species, <span class="dt">color=</span>species))<span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Penguins Body Mass&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;BoxPlot by Species&quot;</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Count&quot;</span>)<span class="op">+</span><span class="kw">theme_light</span>()
+boxplot_mass</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/boxplot_code_1-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="violin-plot" class="slide level2">
+<h2>Violin plot</h2>
+<p>Dsitribution+miroir Utile pour des distributions complexes, e.g. mal résumées par la moyenne et la dispersion.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(palmerpenguins)
+<span class="kw">data</span>(<span class="dt">package =</span> <span class="st">&#39;palmerpenguins&#39;</span>)
+mydata &lt;-<span class="st">  </span>penguins
+violin_mass &lt;-<span class="st"> </span><span class="kw">ggplot</span>(mydata)<span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_violin</span>(<span class="kw">aes</span>(<span class="dt">y=</span>body_mass_g, <span class="dt">x=</span>species, <span class="dt">fill=</span>species), <span class="dt">color=</span><span class="st">&quot;gray&quot;</span>, <span class="dt">trim=</span>F)<span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Penguins Body Mass&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;ViolinPlot by Species&quot;</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Count&quot;</span>)<span class="op">+</span><span class="kw">theme_light</span>()
+violin_mass</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/violin_code_1-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="violin-plot-et-boxplot-code-r-ggplot-2" class="slide level2">
+<h2>Violin plot et Boxplot : Code R + ggplot 2</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(palmerpenguins)
+<span class="kw">data</span>(<span class="dt">package =</span> <span class="st">&#39;palmerpenguins&#39;</span>)
+mydata &lt;-<span class="st">  </span>penguins
+violin_mass &lt;-<span class="st"> </span><span class="kw">ggplot</span>(mydata)<span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_violin</span>(<span class="kw">aes</span>(<span class="dt">y=</span>body_mass_g, <span class="dt">x=</span>species, <span class="dt">fill=</span>species), <span class="dt">color=</span><span class="st">&quot;lightgray&quot;</span>, <span class="dt">trim=</span>F)<span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="kw">aes</span>(<span class="dt">y=</span>body_mass_g, <span class="dt">x=</span>species, <span class="dt">fill=</span>species), <span class="dt">color=</span><span class="st">&quot;black&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;#eeeeee&quot;</span> ,<span class="dt">width=</span><span class="fl">0.1</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Penguins Body Mass&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;ViolinPlot and Boxplot by Species&quot;</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Count&quot;</span>)<span class="op">+</span><span class="kw">theme_light</span>()
+violin_mass</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/violin_code_2-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="pyramides-histogrammes-juxtaposés" class="slide level2">
+<h2>Pyramides (histogrammes juxtaposés)</h2>
+<p>lorsqu'une des variables est qualitatives à deux modalités :</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(palmerpenguins)
+<span class="kw">data</span>(<span class="dt">package =</span> <span class="st">&#39;palmerpenguins&#39;</span>)
+mydata &lt;-<span class="st">  </span>penguins
+pyramide_mass &lt;-<span class="st">  </span><span class="kw">ggplot</span>(mydata, <span class="kw">aes</span>(<span class="dt">fill =</span> sex)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">data =</span> <span class="kw">subset</span>(mydata, sex <span class="op">==</span><span class="st"> &quot;female&quot;</span>), <span class="dt">stat =</span> <span class="st">&quot;bin&quot;</span>, <span class="kw">aes</span>(<span class="dt">x=</span>body_mass_g, <span class="dt">y=</span>..count..<span class="op">*</span>(<span class="op">-</span><span class="dv">1</span>)), <span class="dt">color=</span><span class="st">&quot;grey&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">data =</span> <span class="kw">subset</span>(mydata, sex <span class="op">==</span><span class="st"> &quot;male&quot;</span>), <span class="dt">stat =</span> <span class="st">&quot;bin&quot;</span>, <span class="kw">aes</span>(<span class="dt">x=</span>body_mass_g), <span class="dt">color=</span><span class="st">&quot;grey&quot;</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> <span class="kw">paste0</span>(<span class="kw">as.character</span>(<span class="kw">c</span>(<span class="kw">seq</span>(<span class="dv">20</span>, <span class="dv">0</span>, <span class="dv">-10</span>), <span class="kw">seq</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">10</span>))))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;count&quot;</span>)<span class="op">+</span><span class="st">  </span><span class="kw">coord_flip</span>()<span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Penguins Body Mass&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Pyramid Plot by sex&quot;</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_light</span>()
+  
+pyramide_mass</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/pyramide_code_1-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="polygones-de-fréquences" class="slide level2">
+<h2>Polygones de fréquences</h2>
+<p>&quot;Histogramme en courbe&quot; <br> Utile pour comparer plusieurs distributions</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(palmerpenguins)
+<span class="kw">data</span>(<span class="dt">package =</span> <span class="st">&#39;palmerpenguins&#39;</span>)
+mydata &lt;-<span class="st">  </span>penguins
+freqpoly_mass &lt;-<span class="st"> </span><span class="kw">ggplot</span>(mydata)<span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_freqpoly</span>(<span class="kw">aes</span>(<span class="dt">x=</span>body_mass_g, <span class="dt">color=</span>species), <span class="dt">bins=</span><span class="dv">50</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Penguins Body Mass&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Frequence Polygons&quot;</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Count&quot;</span>)<span class="op">+</span><span class="kw">theme_light</span>()
+freqpoly_mass</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/frequpoly_code1-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="distribution-cumulée-fonction-de-répartition-cdf" class="slide level2">
+<h2>Distribution cumulée , Fonction de répartition , CDF</h2>
+<p>Courbe <span class="math inline">\(x,y\)</span>, <br> en <span class="math inline">\(x\)</span> la valeur de la variable <span class="math inline">\(V\)</span>, en <span class="math inline">\(y\)</span> la probabilité empririque d'avoir dans la population, un individu pour lequel <span class="math inline">\(V\leq x\)</span></p>
+<p>i.e. c'est la fonction <br> <span class="math inline">\(F_{V}(x)=\mathbb {P} (V\leq x)\)</span></p>
+<p><img src="Cours_Univariee_files/figure-revealjs/CDF1%20-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="distribution-cumulée-fonction-de-répartition-cdf-1" class="slide level2">
+<h2>Distribution cumulée , Fonction de répartition , CDF</h2>
+<p><br><br> Permet de superposer les CDF de sous groupes de la population. ici : la race des penguins</p>
+<p><img src="Cours_Univariee_files/figure-revealjs/CDF_groupe%20-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="distribution-cumulée-simple-code-r-ggplot" class="slide level2">
+<h2>Distribution cumulée simple : Code R + ggplot</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(palmerpenguins)
+<span class="kw">data</span>(<span class="dt">package =</span> <span class="st">&#39;palmerpenguins&#39;</span>)
+mydata &lt;-<span class="st">  </span>penguins
+plot_mass &lt;-<span class="st"> </span><span class="kw">ggplot</span>(mydata)<span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_ecdf</span>(<span class="kw">aes</span>(<span class="dt">x=</span> body_mass_g),<span class="dt">color=</span><span class="st">&quot;darkorchid4&quot;</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Penguins Body Mass&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Cumulative Distribution Function&quot;</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Probability&quot;</span>)<span class="op">+</span><span class="kw">theme_light</span>()
+plot_mass</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/CDF_code%20-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="distribution-cumulée-par-groupe-code-r-ggplot" class="slide level2">
+<h2>Distribution cumulée par groupe : Code R + ggplot</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(palmerpenguins)
+<span class="kw">data</span>(<span class="dt">package =</span> <span class="st">&#39;palmerpenguins&#39;</span>)
+mydata &lt;-<span class="st">  </span>penguins
+plot_mass &lt;-<span class="st"> </span><span class="kw">ggplot</span>(mydata)<span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_ecdf</span>(<span class="kw">aes</span>(<span class="dt">x=</span> body_mass_g,<span class="dt">color=</span>species))<span class="op">+</span><span class="st">    </span><span class="co">#on affecte la couleur à la variable modale  </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Penguins Body Mass&quot;</span>, <span class="dt">subtitle =</span> <span class="st">&quot;Cumulative Distribution Function&quot;</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Probability&quot;</span>)<span class="op">+</span><span class="kw">theme_light</span>()
+plot_mass</code></pre></div>
+<p><img src="Cours_Univariee_files/figure-revealjs/CDF_code_groupe%20-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="dot-strip-plot" class="slide level2">
+<h2>Dot Strip Plot</h2>
+</section></section>
+<section><section id="bonus" class="titleslide slide level1"><h1>Bonus</h1></section><section id="fat-tail-distributions" class="slide level2">
+<h2>Fat-tail distributions</h2>
+<p>Les distributions très asymétriques et très étendues sont délicates à résumer.</p>
+<p>Les indicateurs traditionnels sont plus efficaces lorsque la variabilité des valeurs est moindre, et leur distribution plus symétrique.</p>
+<p>e.g. Considérer la population moyenne des villes de France a-t'elle du sens ? <img src="Cours_Univariee_files/figure-revealjs/histoVillesPop-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="distribution-rang-taille-des-villes-de-france" class="slide level2">
+<h2>Distribution rang-taille des villes de france</h2>
+<p>Pour mieux voir la distribution et les écarts, on trace la <strong>taille</strong> des villes en fonction de leur <strong>rang</strong></p>
+<p><img src="Cours_Univariee_files/figure-revealjs/popVilles1%20-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section><section id="transformation-logarithmique" class="slide level2">
+<h2>Transformation logarithmique</h2>
+<p>Appliquer une transformation <strong>monotone</strong>, <strong>bijective</strong> et <strong>inversible</strong> qui &quot;applatisse&quot; la distribution.</p>
+<ul>
+<li>réduit les écarts entre les valeurs</li>
+<li>resserre l'essentiel des valeurs</li>
+</ul>
+<p><span class="math inline">\(\implies\)</span> mesure de façon plus robuste tendance, dispersion et forme</p>
+<p>Ici : le logarithme décimal</p>
+</section><section id="distribution-rang-logtaille" class="slide level2">
+<h2>Distribution rang-log(taille)</h2>
+<p><img src="Cours_Univariee_files/figure-revealjs/loglin1%20-1.png" width="768" style="display: block; margin: auto;" /></p>
+</section></section>
+    </div>
+  </div>
+
+  <script src="Cours_Univariee_files/reveal.js-3.3.0.1/lib/js/head.min.js"></script>
+  <script src="Cours_Univariee_files/reveal.js-3.3.0.1/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Vertical centering of slides
+        center: true,
+        // Opens links in an iframe preview overlay
+        previewLinks: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+        ]
+      });
+    </script>
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+
+<script>
+  (function() {
+    if (window.jQuery) {
+      Reveal.addEventListener( 'slidechanged', function(event) {  
+        window.jQuery(event.previousSlide).trigger('hidden');
+        window.jQuery(event.currentSlide).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+
+  </body>
+</html>

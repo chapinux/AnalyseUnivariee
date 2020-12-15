@@ -36,7 +36,7 @@ quartiers <-  st_read("quartier_paris.shp")
 
 ## Analyse univariée {.flexbox .vcenter}
 
-**Décrire**  et **mesurer** la **répartition** des valeurs que peut prendre une variable : sa  **distributions** ($\approx$ "histogramme en continu")
+**Décrire**  et **mesurer** la **répartition** des valeurs que peut prendre une variable : sa  **distribution** ($\approx$ "histogramme en continu")
 
 Parfois certaines distributions ressemblent à des distributions bien connues : on parle de **lois**
 
@@ -145,7 +145,7 @@ $\displaystyle \bar{x} = \frac{1}{n}\sum_{i=0}^{n} x_i$
 
 Lors que les valeurs n'ont pas le même poids <br>
 <br>
-par exemple poids = effectif de la valeur dans la population.
+par exemple  : poids = effectif de la valeur dans la population.
 <br>
 
 $\displaystyle \bar{x} = \frac{1}{\sum_{i=0}^n pi}\sum_{i=0}^{n} p_i x_i$

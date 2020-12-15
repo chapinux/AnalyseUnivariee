@@ -1,0 +1,17 @@
+base
+revealjs
+tidyverse
+ggplot2
+tibble
+tidyr
+readr
+purrr
+dplyr
+stringr
+forcats
+palmerpenguins
+knitr
+xtable
+gridExtra
+sf
+latex2exp
