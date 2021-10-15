@@ -321,7 +321,7 @@ Variance, écart-type, Coeff. de variation.
 
 ## La **dispersion** statistique 
 
-Tendance des valeurs d'une variable à se disperser autour des valeurs des tendances centrales.
+end
 ```{r gaussienne2D, cache=TRUE, fig.width=10}
 mydataset <- data.frame(X=rnorm(900), Y=rnorm(900))
 plot1 <- ggplot(mydataset)+
@@ -520,7 +520,7 @@ lines(density(B), col="red")
  
  <br>
  <br> <br> 
- Symétrie , applatissement
+ Symétrie , aplatissement
  
   
 ## **Asymétrie** des distributions.
@@ -614,10 +614,10 @@ ggplot(mydata, aes(x=value, y=dens))+geom_line(color="#44DD99", lwd=1.2)+
 
 Courbe piquée: Peu de variation, distribution relativement homogène, beaucoup de valeurs égales ou proches de la moyenne.
 
-Courbe applatie: Variations importantes, distribution relativement hétérogène, beaucoup de valeurs s'éloignent de la moyenne.
+Courbe aplatie: Variations importantes, distribution relativement hétérogène, beaucoup de valeurs s'éloignent de la moyenne.
 
 
-## Coefficient d'applatissement : kurtosis 
+## Coefficient d'aplatissement : kurtosis 
 
 Coefficient non normalisé :
 
@@ -626,11 +626,11 @@ $\displaystyle K=\frac{\sum_{i=1}^{n}(x_i -\bar{x})^4}{n\sigma^4}$
 
 Si la distribution est normale , $K= 3$
 
-Si $K>3$, la distribution est **plus applatie** 
+Si $K>3$, la distribution est **plus aplatie** 
 
-Si $K<3$, la distribution est **moins applatie** 
+Si $K<3$, la distribution est **moins aplatie** 
 
-On normalise parfois en considérant $K'=K-3$ (excès d'applatissement)
+On normalise parfois en considérant $K'=K-3$ (excès d'aplatissement)
 
 
 # Représentation d'une distribution et Échelle de couleurs
@@ -822,10 +822,10 @@ histo_mass
 
 
 ## Distribution : Code R + ggplot
-
+<small>
 <span style="color:red">&#9888;</span>  ce n'est pas exactement une probabilité, mais une **densité** de probabilité.
 Pour obtenir la probabilité , il faut intégrer sur un petit $dx$.
-
+</small>
 
 ```{r distrib_code_1, cache=T, warning=F, echo=T,fig.width=8, fig.height=3}
 library(palmerpenguins)
@@ -844,7 +844,7 @@ distrib_mass
 ## BoxPlot : Code R + ggplot
 
 
-```{r boxplot_code_1, cache=T, warning=F, echo=T,fig.width=8, fig.height=3}
+```{r boxplot_code_1, echo=T, fig.height=3, fig.width=8, warning=FALSE, cache=FALSE}
 library(palmerpenguins)
 data(package = 'palmerpenguins')
 mydata <-  penguins
@@ -1042,7 +1042,7 @@ plot_PopVilles
 
 ## Transformation logarithmique
 
-Appliquer une transformation **monotone**, **bijective** et **inversible** qui "applatisse" la distribution.
+Appliquer une transformation **monotone**, **bijective** et **inversible** qui "aplatisse" la distribution.
 
   * réduit les écarts entre les valeurs
   * resserre  l'essentiel des valeurs 

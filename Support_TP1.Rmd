@@ -89,19 +89,25 @@ Vous disposez de deux jeux de données :
   - identifier les données pertinentes pour réaliser ce calcul
   - réaliser une jointure spatiale (laquelle ? ) 
   - calculer le nombre d'arbres par quartier
-  - stocker le résutat dans une variable _nb_arbres_ dans la couche vectorielle des quartiers
+  - stocker le résultat dans une variable _nb_arbres_ dans la couche vectorielle des quartiers
 
  
  
- Les packages `dplyr` et `sf`  sont requis 
+ Les packages `dplyr` et `sf`  sont requis , pour les installer , utiliser la fonction `install.packages`.
+
+
 Fonctions utiles:
-`read_sf` pour cgarger les données spatiales  
-`plot`  pour afficher 
-`st_intersects` et `st_within`  prédicats pour la jointure spatiale
-`st_join` pour la jointure spatiale
-`filter` pour filtrer des données
-`table` pour des tables de contingences
-`st_crs`  pour connaître et fixer le CRS de données patiales 
+
+- `read_sf` pour charger les données spatiales  
+- `plot`  pour afficher 
+- `st_intersects` et `st_within`  prédicats pour la jointure spatiale
+- `st_join` pour la jointure spatiale
+
+Autres fonctions auxiliaires : 
+
+- `filter` pour filtrer des données
+- `table` pour des tables de contingences
+- `st_crs`  pour connaître et fixer le CRS de données patiales 
 
   
 ## Calculer la densité d'arbres par quartier
@@ -115,12 +121,12 @@ Fonctions utiles:
   
   
   
-  Fonctions : 
+  Fonctions utiles : 
   
   `st_area` pour calculer l'aire d'un polygone
   
   
-## Comparaison des variables 
+## Comparaison des variables `nombre` et `densité` 
 
 Étapes :
 
@@ -173,16 +179,16 @@ Exporter les données ajoutées (nombre et densité d'arbres) dans la couche vec
 Fonctions : `write.csv` et `write_sf`
 
 
-# À terme (devoir) 
+# Pour aller plus loin : 
 
 
 A l'aide des données de voiries de Paris [disponible ici](https://opendata.paris.fr/explore/dataset/voie/export/), peut-on établir un lien entre le genre des arbres et leur distance à la voirie la plus proche ? 
 
 
-# Regressions linéaires 
+## Regressions linéaires 
 
 
-## regression 
+### regression 
 Réaliser une regression linéaire entre la hauteur et le diamètre de tronc des arbres.
 Quelles opérations de filtrage pourraient améliorer les résults de la regression
 
@@ -190,14 +196,14 @@ Fonctions:
 `lm` pour réaliser une régression linéaire 
 
 
-## regression par espèce 
+### regression par espèce 
 
 
 Réaliser des regressions linéaires entre la hauteur et le diamètre de tronc des arbres pour chaque espèce d'arbres.
 Cela améliore-t-il les résultats ? 
 
 
-## Cartographie des résidus 
+### Cartographie des résidus 
 
 
-Réaliser une cartographie des résidus 
+Réaliser une cartographie des résidus  du modèle linéaire  

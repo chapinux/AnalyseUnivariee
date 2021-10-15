@@ -10,6 +10,7 @@ output:
     highlight: kate
     number_sections: yes
     number_subsections: yes
+  self-contained : yes
 ---
 
 ```{r setup, include=FALSE}
@@ -30,7 +31,7 @@ La connaissance du  package `dplyr` et de sa notation à base de l'opérateur pi
 
 
 
-## Chargement des données.
+# Chargement des données.
 
 Nous avons récupéré le fichier des données spatialisé sous le format GeoJSON.
  [disponible ici](https://opendata.paris.fr/explore/dataset/les-arbres/information/?disjunctive.typeemplacement&disjunctive.arrondissement&disjunctive.libellefrancais&disjunctive.genre&disjunctive.espece&disjunctive.varieteoucultivar&disjunctive.stadedeveloppement&disjunctive.remarquable). 
@@ -41,7 +42,7 @@ Pour lire le GeoJSON , nous avons besoin d'installer un package spécifique : `g
 
 
 
-### Installation des librairies
+# Installation des librairies
 
 L'installation et le chargement des packages  au moyen des fonctions `install.packages("nom_du_package")` et `library(nom_du_package)`
 
@@ -67,7 +68,7 @@ library(cartography)
 
 
 
-### Lecture de fichier
+# Lecture de fichier
 
 
 
@@ -179,14 +180,14 @@ plot(arbres_intramuros["arrondissement"], cex=0.1)
 ```
 
 
-## Données vectorielles des quartiers de Paris.
+# Données vectorielles des quartiers de Paris.
 
 
 Nous allons maintenant charger les contours des quartiers de Paris, disponibles sur (https://opendata.paris.fr/explore/dataset/quartier_paris/information/). Chaque arrondissement contient 4 quartiers, on a donc 80 unités spatiales à considérer.
 
 
 ```{r contours, cache=TRUE}
-quartiers <-(read_sf("quartier_paris.shp"))
+quartiers <-read_sf("quartier_paris.shp")
 quartiers <- st_transform(quartiers, 2154)
 quartiers <-  st_set_crs(quartiers,2154)
 
@@ -195,12 +196,12 @@ plot(arbres_intramuros["arrondissement"], add=TRUE, alpha=0.5, cex=0.1  )
 ```
 
 
-## "Cartographie" simple
+# "Cartographie" simple
 
 Pour tracer un objet spatial , il suffit d'appliquer la fonction `plot()`  sur cet objet.
 Cette fonction peut également colorer la géométrie de l'objet en fonction d'une variable. 
 
-### Les 6 genres d'arbres les plus représentés
+## Les 6 genres d'arbres les plus représentés
 
 
 Nous utilisons les fonctions `count()`du package `dplyr`,   pour compter les nombre d'arbre par genre. (c'est l'équivalent d'un `group_by`, suivi d'une aggregation de comptage : `count`)
@@ -231,7 +232,7 @@ Que peut-on dire de l'implantation de ces 6 genres ?
 
 
 
-### La domanialité
+## La domanialité
 
 Afficher cette variable est immédiat. La légende est perfectible pour le moment; pour faire une vraie carte , voir à la fin du support l'utilisation du package `cartography`.
 
@@ -244,9 +245,9 @@ Afficher cette variable est immédiat. La légende est perfectible pour le momen
 ```
 
 
-## Calcul du nombre d'arbres par quartier
+# Calcul du nombre d'arbres par quartier
 
-### Aggregation spatiale 
+## Jointure spatiale 
 
 On réalise une jointure (spatiale) entre `quartiers`  et `arbres_intramuros`, pour inclure les informations de quartiers aux arbres à l'aide du prédicat spatial `st_within`
 
@@ -257,7 +258,7 @@ nrow(arbres_in_quartiers)
 
 On obtient alors un nouveau dataframe spatial, contenant les 163367 arbres situés dans les quartiers intramuros, et augmentés des variables issues du dataframe `quartier`.
 
-On peut alors compter le nombre d'arbres par quartiers avec la fonction `table` qui compte (entre autres) le nombre d'individus (ligne) par valeurs distinctes d'une de ses variables. On peut étendre le nombre de variables pour obtenir des tables de contingence.
+On peut alors compter le nombre d'arbres par quartiers avec la fonction `table` qui compte (entre autres) le nombre d'individus (ligne) par valeurs distinctes d'une de ses variables. On peut inclure deux (ou plus) variables pour obtenir des tables de contingence.
 
 ```{r aggreg, cache=TRUE}
 nb_arbres_by_quartier <- table(arbres_in_quartiers$c_qu)
@@ -272,7 +273,7 @@ quartiers <-  arrange(quartiers,c_qu)
 quartiers$nb_arbres <-  nb_arbres_by_quartier
 ```
 
-Avant de cartographier cette valeur, regardons sa distribution à l'aide d'un histogramme pour déterminer si un traitemment particulier doit être envisagé (en cas de distribution particulièrement biscornue)
+Avant de cartographier cette valeur, regardons sa distribution à l'aide d'un histogramme pour déterminer si un traitement particulier doit être envisagé (en cas de distribution particulièrement biscornue)
 
 ```{r hist2, cache=TRUE}
 hist(quartiers$nb_arbres,breaks = 10)
@@ -289,7 +290,7 @@ title("Nombre d'arbres par quartier administrif de Paris",sub = "Représentation
 
 Pour réaliser une sorte de raster, nous allons créer une grille qui couvre la zone d'étude, et projeter les points du semis (le dataframe `arbres_intramuros`) dans les cellules créées (c'est également une façon d'approcher une carte de densité 2D de façon discrète)
 
-Afin de ne pas faire une grille qui couvre la boîte englobante de la zone d'étude, mais que la grille ne couvre que les géométries de chaque quartier, on réalise une intersection entre la grille raster et l'enveloppe des quartiers.
+Afin de ne pas faire une grille qui couvre la boîte englobante de la zone d'étude, mais que la grille ne couvre **que** les géométries de chaque quartier, on réalise une intersection entre la grille raster et l'enveloppe des quartiers.
 
 **N.B.** ce n'est pas la façon canonique de réaliser un raster, pour cela il faut utiliser la library `raster` et réaliser le raster à partir  l'aide de la fonction 
 
@@ -313,6 +314,7 @@ plot(rast2)
 predicat_intersect <- st_contains(rast2,arbres_intramuros)
 
 #on compte le nombre de points par cellules avec la fonction length
+# la syntaxe est particulière, heureusement c'est assez rare de devoir procéder ainsi !
 rast2$nb_arbres <- unlist(lapply(predicat_intersect, length)) 
 hist(rast2$nb_arbres)
 plot(rast2)
@@ -341,8 +343,8 @@ plot(quartiers$geometry, border="white", bgc="#222222", add=T, alpha=0.8,lwd=0.3
 
 ```{r rasterVariationHex, cache=TRUE}
 rasthex <- st_make_grid(quartiers, square = FALSE, n=60, what="polygons")
+rasthex <-  st_intersection(st_geometry(quartiers), rasthex)
 rasthex <- st_sf(rasthex)
-#les hexagones s'arrètent à l'evloppe, pas besoin de la créer
 predicat_intersect <- st_contains(rasthex,arbres_intramuros)
 rasthex$nb_arbres <- unlist(lapply(predicat_intersect, length)) 
 
@@ -370,7 +372,7 @@ On doit d'abord vérifier que cette valeur est correcte (la projection des donn�
 
 ```{r delta_surf, cache =TRUE}
 ecarts <-  as.numeric(st_area(quartiers)) - quartiers$surface
-ecarts
+summary(ecarts)
 ```
 
 Les écarts sont très faibles (de l'ordre de $10^{-5}m^2$) , suffisamment pour  que l'attribut `surface` soit directement utilisé pour le calcul de la densité.
